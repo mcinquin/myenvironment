@@ -46,10 +46,10 @@ fi
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
 xterm-color)
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]${STATUS} \t> '
     ;;
 *)
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w \t$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]${STATUS} \t> '
     ;;
 esac
 
@@ -106,7 +106,7 @@ alias gitcl='git clone'
 alias gitco='git checkout'
 alias gits='git status'
 alias gitb='git branch'
-alias gitl='git  log --color --graph --pretty=format:"%C(red)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
+alias gitl='git log --color --graph --pretty=format:"%C(red)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 
 alias api='sudo apt-get install'
 alias apupd='sudo apt-get update'
