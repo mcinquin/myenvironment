@@ -24,9 +24,8 @@ set shiftround                  " use multiple of shiftwidth when indenting with
 set spell
 set hidden
 set smarttab
-set pastetoggle=<F1>
 map <F3> mzgg=G`z<CR>
-map <C-p><C-p> :set paste<CR>
+map <F1> :set paste<CR>
 
 "--searching options--
 set ignorecase                  " ignore case when searching
