@@ -1,0 +1,22 @@
+[global_config]
+  suppress_multiple_term_dialog = True
+[keybindings]
+  split_horiz = <Control><Shift>h
+  split_vert = <Control><Shift>v
+  paste = <Control>v
+  copy = <Control>c
+[profiles]
+  [[Shini]]
+    background_darkness = 0.83
+    background_image = None
+    background_type = transparent
+    foreground_color = "#9a9a9a"
+[layouts]
+  [[default]]
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+    [[[window0]]]
+      type = Window
+      parent = ""
+[plugins]
