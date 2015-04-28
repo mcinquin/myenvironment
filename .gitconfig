@@ -12,6 +12,7 @@
     lg = log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s - %C(green)(%ar)%Creset, %C(magenta)<%an>%Creset'
     lgs = log --pretty=oneline --abbrev-commit --graph --decorate
     di = diff --color-words
+    info = remote -v
 [core]
     editor = vim
 [diff]
