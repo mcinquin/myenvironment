@@ -1,13 +1,19 @@
 [global_config]
+  enabled_plugins = CustomCommandsMenu, TerminalShot, APTURLHandler
   suppress_multiple_term_dialog = True
 [keybindings]
-  split_horiz = <Control><Shift>h
-  split_vert = <Control><Shift>v
   paste = <Control>v
   copy = <Control>c
+  split_vert = <Control><Shift>v
+  split_horiz = <Control><Shift>h
 [profiles]
+  [[default]]
+    background_darkness = 0.81
+    background_image = None
+    background_type = transparent
+    foreground_color = "#9a9a9a"
   [[Shini]]
-    background_darkness = 0.83
+    background_darkness = 0.81
     background_image = None
     background_type = transparent
     foreground_color = "#9a9a9a"
@@ -16,6 +22,7 @@
     [[[child1]]]
       type = Terminal
       parent = window0
+      profile = Shini
     [[[window0]]]
       type = Window
       parent = ""
