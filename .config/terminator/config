@@ -1,5 +1,6 @@
 [global_config]
   enabled_plugins = CustomCommandsMenu, TerminalShot, APTURLHandler
+  window_state = maximise
   suppress_multiple_term_dialog = True
 [keybindings]
   paste = <Control>v
