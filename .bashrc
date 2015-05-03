@@ -114,6 +114,7 @@ alias apupg='sudo apt-get upgrade'
 alias apse='sudo apt-cache search'
 alias apsh='sudo apt-cache show'
 alias app='sudo apt-get purge'
+alias apar='sudo apt-get autoremove'
 
 alias service='sudo service'
 
