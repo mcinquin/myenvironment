@@ -7,6 +7,13 @@ export HISTCONTROL=ignoredups
 # ... and ignore same sucessive entries.
 export HISTCONTROL=ignoreboth
 
+# Set editor
+export EDITOR=vim
+
+# Change the history
+export HISTFILESIZE=4200
+export HISTSIZE=1000
+
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
