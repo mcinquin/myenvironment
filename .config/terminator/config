@@ -3,10 +3,10 @@
   window_state = maximise
   suppress_multiple_term_dialog = True
 [keybindings]
-  paste = <Control>v
-  copy = <Control>c
-  split_vert = <Control><Shift>v
-  split_horiz = <Control><Shift>h
+  paste = <Control><Shift>v
+  copy = <Control><Shift>c
+  split_vert = <Control><Alt>v
+  split_horiz = <Control><Alt>h
 [profiles]
   [[default]]
     background_darkness = 0.81
@@ -14,7 +14,7 @@
     background_type = transparent
     foreground_color = "#9a9a9a"
   [[Shini]]
-    background_darkness = 0.81
+    background_darkness = 0.83
     background_image = None
     background_type = transparent
     foreground_color = "#9a9a9a"
