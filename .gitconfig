@@ -15,6 +15,7 @@
     info = remote -v
 [core]
     editor = vim
+	excludesfile = ~/.gitignore
 [diff]
     tool = vimdiff
 [push]
