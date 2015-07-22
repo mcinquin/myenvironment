@@ -58,7 +58,7 @@ endfunction " }}}2
 " getExec() or getExecEscaped().  Normally isAvailable() does that for you
 " automatically, but you should keep still this in mind if you change the
 " current checker workflow.
-function! g:SyntasticChecker.syncExec() dict " {{{2
+function! g:SyntasticChecker.syncExec() abort " {{{2
     let user_exec =
         \ expand( exists('b:syntastic_' . self._name . '_exec') ? b:syntastic_{self._name}_exec :
         \ syntastic#util#var(self._filetype . '_' . self._name . '_exec'), 1 )
@@ -85,6 +85,11 @@ function! g:SyntasticChecker.getLocListRaw() abort " {{{2
 
     if has_key(self, '_enable')
         let status = syntastic#util#var(self._enable, -1)
+        if type(status) != type(0)
+            call syntastic#log#error('checker ' . name . ': invalid value ' . strtrans(string(status)) .
+                \ ' for g:syntastic_' . self._enable . '; try 0 or 1 instead')
+            return []
+        endif
         if status < 0
             call syntastic#log#error('checker ' . name . ': checks disabled for security reasons; ' .
                 \ 'set g:syntastic_' . self._enable . ' to 1 to override')
