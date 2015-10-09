@@ -22,7 +22,6 @@ shopt -s checkwinsize
 [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
 
 
-
 ################
 #### Prompt ####
 ################
@@ -37,7 +36,6 @@ screen)
 *)
     ;;
 esac
-
 
 #256 colors term
 export TERM=xterm-256color
@@ -76,12 +74,18 @@ source ~/.bash-git-prompt/gitprompt.sh
 #################
 
 if [ "$TERM" != "dumb" ]; then
-    eval "`dircolors -b`"
-    alias ls='ls --color=auto'
-    alias dir='ls --color=auto --format=vertical'
-    alias vdir='ls --color=auto --format=long'
+    if [ "$OSTYPE" == "linux-gnu" ]; then
+        eval "`dircolors -b`"
+        alias ls='ls --color=auto'
+        alias dir='ls --color=auto --format=vertical'
+        alias vdir='ls --color=auto --format=long'
+    elif [ "$OSTYPE" == "darwin"* ]; then
+        eval "`gdircolors -b ~/.dircolors`"
+        alias ls='ls -G'
+        alias dir='ls -G --format=vertical'
+        alias vdir='ls -G --format=long'
+    fi
 fi
-
 
 
 ###############
