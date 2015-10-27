@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 function async_run() {
   {
@@ -282,8 +282,8 @@ function git_prompt_config() {
   fi
   if [[ -z "$__GIT_STATUS_CMD" ]] ; then          # if GIT_STATUS_CMD not defined..
     git_prompt_dir
-    if ! gp_maybe_set_envar_to_path __GIT_STATUS_CMD "$__GIT_PROMPT_DIR/gitstatus.sh" ; then
-      echo 1>&2 "Cannot find gitstatus.sh!"
+    if ! gp_maybe_set_envar_to_path __GIT_STATUS_CMD "$__GIT_PROMPT_DIR/$GIT_PROMPT_STATUS_COMMAND" ; then
+      echo 1>&2 "Cannot find $GIT_PROMPT_STATUS_COMMAND!"
     fi
     # __GIT_STATUS_CMD defined
   fi
@@ -434,23 +434,33 @@ function updatePrompt() {
   git_prompt_config
 
   export __GIT_PROMPT_IGNORE_STASH=${GIT_PROMPT_IGNORE_STASH}
-  local -a GitStatus
-  GitStatus=($("$__GIT_STATUS_CMD" 2>/dev/null))
+  export __GIT_PROMPT_SHOW_UPSTREAM=${GIT_PROMPT_SHOW_UPSTREAM}
 
-  local GIT_BRANCH=$(replaceSymbols ${GitStatus[0]})
-  local GIT_REMOTE="$(replaceSymbols ${GitStatus[1]})"
+  local -a git_status_fields
+  git_status_fields=($("$__GIT_STATUS_CMD" 2>/dev/null))
+
+  local GIT_BRANCH=$(replaceSymbols ${git_status_fields[0]})
+  local GIT_REMOTE="$(replaceSymbols ${git_status_fields[1]})"
   if [[ "." == "$GIT_REMOTE" ]]; then
     unset GIT_REMOTE
   fi
-  local GIT_STAGED=${GitStatus[2]}
-  local GIT_CONFLICTS=${GitStatus[3]}
-  local GIT_CHANGED=${GitStatus[4]}
-  local GIT_UNTRACKED=${GitStatus[5]}
-  local GIT_STASHED=${GitStatus[6]}
-  local GIT_CLEAN=${GitStatus[7]}
+
+  local GIT_UPSTREAM="${git_status_fields[2]}"
+  if [[ -z "${__GIT_PROMPT_SHOW_UPSTREAM}" || "^" == "$GIT_UPSTREAM" ]]; then
+    unset GIT_UPSTREAM
+  else
+    GIT_UPSTREAM="${GIT_PROMPT_UPSTREAM//_UPSTREAM_/${GIT_UPSTREAM}}"
+  fi
+
+  local GIT_STAGED=${git_status_fields[3]}
+  local GIT_CONFLICTS=${git_status_fields[4]}
+  local GIT_CHANGED=${git_status_fields[5]}
+  local GIT_UNTRACKED=${git_status_fields[6]}
+  local GIT_STASHED=${git_status_fields[7]}
+  local GIT_CLEAN=${git_status_fields[8]}
 
   local NEW_PROMPT="$EMPTY_PROMPT"
-  if [[ -n "$GitStatus" ]]; then
+  if [[ -n "$git_status_fields" ]]; then
     local STATUS="${PROMPT_LEADING_SPACE}${GIT_PROMPT_PREFIX}${GIT_PROMPT_BRANCH}${GIT_BRANCH}${ResetColor}"
 
     # __add_status KIND VALEXPR INSERT
@@ -481,6 +491,7 @@ function updatePrompt() {
       eval "STATUS=\"$STATUS$1\""
     }
 
+    __add_status        '$GIT_UPSTREAM'
     __chk_gitvar_status 'REMOTE'     '-n'
     __add_status        "$GIT_PROMPT_SEPARATOR"
     __chk_gitvar_status 'STAGED'     '-ne 0'
@@ -519,6 +530,19 @@ function gp_add_virtualenv_to_prompt {
 # bash function
 function is_function {
   declare -Ff "$1" >/dev/null;
+}
+#Helper function that truncates $PWD depending on window width
+function gp_truncate_pwd {
+  local tilde="~"
+  local newPWD="${PWD/#${HOME}/${tilde}}"
+  local pwdmaxlen=$((${COLUMNS:-80}/3))
+  [ ${#newPWD} -gt $pwdmaxlen ] && newPWD="...${newPWD:3-$pwdmaxlen}"
+  echo -n "$newPWD"
+}
+
+#Sets the window title to the given argument string
+function gp_set_window_title {
+  echo -ne "\033]0;"$@"\007"
 }
 
 function prompt_callback_default {

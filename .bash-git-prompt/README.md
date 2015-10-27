@@ -60,7 +60,7 @@ The prompt may look like the following:
 
 By default, the general appearance of the prompt is::
 
-    (<branch> <branch tracking>|<local status>)
+    (<branch> <upstream branch> <branch tracking>|<local status>)
 
 The symbols are as follows:
 
@@ -71,6 +71,10 @@ The symbols are as follows:
   - ``✚n``: there are ``n`` changed but *unstaged* files
   - ``…n``: there are ``n`` untracked files
   - ``⚑n``: there are ``n`` stash entries
+- Upstream branch
+  - Shows the remote tracking branch
+  - Disabled by default
+  - Enable by setting GIT_PROMPT_SHOW_UPSTREAM=1
 - Branch Tracking Symbols
   - ``↑n``: ahead of remote by ``n`` commits
   - ``↓n``: behind remote by ``n`` commits
@@ -118,6 +122,10 @@ git clone https://github.com/magicmonty/bash-git-prompt.git .bash-git-prompt
    GIT_PROMPT_ONLY_IN_REPO=1
 
    # GIT_PROMPT_FETCH_REMOTE_STATUS=0   # uncomment to avoid fetching remote status
+
+   # GIT_PROMPT_SHOW_UPSTREAM=1 # uncomment to show upstream tracking branch
+
+   # GIT_PROMPT_STATUS_COMMAND=gitstatus_pre-1.7.10.sh # uncomment to support Git older than 1.7.10
 
    # GIT_PROMPT_START=...    # uncomment for custom prompt start sequence
    # GIT_PROMPT_END=...      # uncomment for custom prompt end sequence
@@ -199,6 +207,10 @@ function prompt_callback {
     fi
 }
 ```
+
+- There are two helper functions that can be used within `prompt_callback`:
+    - `gp_set_window_title <String>` - sets the window title to the given string (should work for XTerm type terminals like in OS X or Ubuntu)
+    - `gp_truncate_pwd` - a function that returns the current PWD truncated to fit the current terminal width
 
 - If you want to show the git prompt only if you are in a git repository you
   can set ``GIT_PROMPT_ONLY_IN_REPO=1`` before sourcing the gitprompt script
