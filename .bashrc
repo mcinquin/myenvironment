@@ -7,13 +7,6 @@ export HISTCONTROL=ignoredups
 # ... and ignore same sucessive entries.
 export HISTCONTROL=ignoreboth
 
-# Set editor
-export EDITOR=vim
-
-# Change the history
-export HISTFILESIZE=4200
-export HISTSIZE=1000
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -22,20 +15,10 @@ shopt -s checkwinsize
 [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
 
 
+
 ################
 #### Prompt ####
 ################
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
-    ;;
-screen)
-    PROMPT_COMMAND='echo -ne "\x1bk${USER}@${HOSTNAME}: ${PWD/$HOME/~}\x1b\\";'
-    ;;
-*)
-    ;;
-esac
 
 #256 colors term
 export TERM=xterm-256color
@@ -49,24 +32,22 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
 fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
+PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]${STATUS} \t> '
+
+# If this is an xterm set the title to user@host:dir
 case "$TERM" in
-xterm-*)
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]${STATUS} \t> '
+xterm*|rxvt*)
+    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
     ;;
 *)
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]${STATUS} \t> '
     ;;
 esac
 
-# git prompt configuration for bash
-#export GIT_PS1_SHOWDIRTYSTATE=1 GIT_PS1_SHOWSTASHSTATE=1 GIT_PS1_SHOWUNTRACKEDFILES=1 GIT_PS1_SHOWCOLORHINTS=1
-#export GIT_PS1_SHOWUPSTREAM=verbose GIT_PS1_DESCRIBE_STYLE=branch
-#PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[0;33m\][$(__git_ps1)\[\033[0;33m\] ]\[\033[00m\] \t> '
-#    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] \t> '
-
+# bash-git-prompt
 GIT_PROMPT_ONLY_IN_REPO=1
 GIT_PROMPT_THEME=Custom
 source ~/.bash-git-prompt/gitprompt.sh
+
 
 
 #################
@@ -74,18 +55,12 @@ source ~/.bash-git-prompt/gitprompt.sh
 #################
 
 if [ "$TERM" != "dumb" ]; then
-    if [ "$OSTYPE" == "linux-gnu" ]; then
-        eval "`dircolors -b`"
-        alias ls='ls --color=auto'
-        alias dir='ls --color=auto --format=vertical'
-        alias vdir='ls --color=auto --format=long'
-    elif [ "$OSTYPE" == "darwin"* ]; then
-        eval "`gdircolors -b ~/.dircolors`"
-        alias ls='ls -G'
-        alias dir='ls -G --format=vertical'
-        alias vdir='ls -G --format=long'
-    fi
+    eval "`dircolors -b`"
+    alias ls='ls --color=auto'
+    alias dir='ls --color=auto --format=vertical'
+    alias vdir='ls --color=auto --format=long'
 fi
+
 
 
 ###############
@@ -125,7 +100,6 @@ alias apupg='sudo apt-get upgrade'
 alias apse='sudo apt-cache search'
 alias apsh='sudo apt-cache show'
 alias app='sudo apt-get purge'
-alias apar='sudo apt-get autoremove'
 
 alias service='sudo service'
 
