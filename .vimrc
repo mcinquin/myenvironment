@@ -41,7 +41,7 @@ set title                       " change the terminal's title
 set titleold=                   " Don't set the title to 'Thanks for flying Vim' when exiting"
 set showmode                    " Display the current mode
 set laststatus=2
-set colorcolumn=80
+"set colorcolumn=80
 
 "-Pathogen-
 execute pathogen#infect()
