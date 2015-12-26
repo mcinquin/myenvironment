@@ -94,12 +94,12 @@ alias gits='git status'
 alias gitb='git branch'
 alias gitl='git log --color --graph --pretty=format:"%C(red)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 
-alias api='sudo apt-get install'
-alias apupd='sudo apt-get update'
-alias apupg='sudo apt-get upgrade'
-alias apse='sudo apt-cache search'
-alias apsh='sudo apt-cache show'
-alias app='sudo apt-get purge'
+alias api='sudo apt install'
+alias apupd='sudo apt update'
+alias apupg='sudo apt upgrade'
+alias apse='sudo apt search'
+alias apsh='sudo apt show'
+alias app='sudo apt purge'
 
 alias service='sudo service'
 
