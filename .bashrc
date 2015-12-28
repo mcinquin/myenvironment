@@ -100,6 +100,7 @@ alias apupg='sudo apt upgrade'
 alias apse='sudo apt search'
 alias apsh='sudo apt show'
 alias app='sudo apt purge'
+alias apar='sudo apt-get autoremove'
 
 alias service='sudo service'
 
