@@ -1,7 +1,7 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Last Change: 2015-11-07.
-" @Revision:    51
+" @Last Change: 2015-12-12.
+" @Revision:    59
 
 
 if !exists('g:tlib#sys#special_protocols')
@@ -16,14 +16,14 @@ if !exists('g:tlib#sys#special_suffixes')
     " A list of |regexp|s matching suffixes that should be handled by 
     " |g:tlib#sys#system_browser|.
     " CAVEAT: Must be a |\V| |regexp|.
-    let g:tlib#sys#special_suffixes = ['xlsx\?', 'docx\?', 'pptx\?', 'accdb', 'mdb', 'sqlite', 'pdf', 'jpg', 'png', 'gif']    "{{{2
+    let g:tlib#sys#special_suffixes = ['xlsx\?', 'docx\?', 'pptx\?', 'accdb', 'mdb', 'sqlite', 'pdf', 'jpg', 'png', 'gif', 'od\[tspg]']    "{{{2
 endif
 
 
 if !exists('g:tlib#sys#system_rx')
     " Open links matching this |regexp| with |g:tlib#sys#system_browser|.
     " CAVEAT: Must be a |\V| |regexp|.
-    let g:tlib#sys#system_rx = printf('\V\%(\^\%(%s\):\|.\%(%s\)\)', join(g:tlib#sys#special_protocols, '\|'), join(g:tlib#sys#special_suffixes, '\|'))   "{{{2
+    let g:tlib#sys#system_rx = printf('\V\%(\^\%(%s\):\|.\%(%s\)\$\)', join(g:tlib#sys#special_protocols, '\|'), join(g:tlib#sys#special_suffixes, '\|'))   "{{{2
 endif
 
 
@@ -185,7 +185,8 @@ function! tlib#sys#Open(filename) abort "{{{3
     Tlibtrace 'tlib', a:filename
     if !empty(g:tlib#sys#system_browser) && tlib#sys#IsSpecial(a:filename)
         try
-            let cmd = printf(g:tlib#sys#system_browser, escape(a:filename, ' %#!'))
+            let cmd = printf(g:tlib#sys#system_browser, a:filename)
+            " let cmd = printf(g:tlib#sys#system_browser, escape(a:filename, ' %#!'))
             Tlibtrace 'tlib', cmd
             exec cmd
             return 1
@@ -205,7 +206,7 @@ function! tlib#sys#SystemInDir(dir, ...) abort "{{{3
     try
         return call(function('system'), a:000)
     finally
-        cd! -
+        silent cd! -
     endtry
 endf
 

@@ -1,8 +1,8 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @Website:     https://github.com/tomtom
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Last Change: 2015-11-07
-" @Revision:    133
+" @Last Change: 2015-12-04
+" @Revision:    140
 
 
 if !exists('g:tlib#trace#backtrace')
@@ -60,6 +60,14 @@ function! tlib#trace#Set(vars) abort "{{{3
 endf
 
 
+function! tlib#trace#Backtrace(caller) abort "{{{3
+    let caller = split(a:caller, '\.\.')
+    let start  = max([0, len(caller) - g:tlib#trace#backtrace - 1])
+    let caller = caller[start : -1]
+    return join(caller, '..')
+endf
+
+
 " Print the values of vars. The first value is a "guard" (see 
 " |:Tlibtrace|).
 function! tlib#trace#Print(caller, vars, values) abort "{{{3
@@ -75,17 +83,20 @@ function! tlib#trace#Print(caller, vars, values) abort "{{{3
         call add(msg, guard)
         call add(msg, tlib#time#FormatNow() .':')
         if g:tlib#trace#backtrace > 0
-            let caller = split(a:caller, '\.\.')
-            let start  = max([0, len(caller) - g:tlib#trace#backtrace - 1])
-            let caller = caller[start : -1]
-            if !empty(caller)
-                call add(msg, join(caller, '..') .':')
+            let bt = tlib#trace#Backtrace(a:caller)
+            if !empty(bt)
+                call add(msg, bt .':')
             endif
         endif
         for i in range(1, len(a:vars) - 1)
             let v = substitute(a:vars[i], ',$', '', '')
-            let r = string(a:values[i])
-            call add(msg, v .'='. r .';')
+            let r = a:values[i]
+            if v =~# '^\([''"]\).\{-}\1$'
+                call add(msg, r .';')
+            else
+                call add(msg, v .'='. string(r) .';')
+            endif
+            unlet r
         endfor
         exec printf(g:tlib#trace#printf, string(join(msg)))
     endif
@@ -97,7 +108,7 @@ function! tlib#trace#Enable() abort "{{{3
     if !exists('s:trace_rx')
         let s:trace_rx = '^\%(error\)$'
         " :nodoc:
-        command! -nargs=+ -bar Tlibtrace call tlib#trace#Print(expand('<sfile>'), [<f-args>], [<args>])
+        command! -nargs=+ -bang Tlibtrace call tlib#trace#Print(expand('<sfile>'), [<f-args>], [<args>])
     endif
 endf
 
@@ -105,7 +116,7 @@ endf
 " Disable tracing via |:Tlibtrace|.
 function! tlib#trace#Disable() abort "{{{3
     " :nodoc:
-    command! -nargs=+ -bang -bar Tlibtrace :
+    command! -nargs=+ -bang Tlibtrace :
     unlet! s:trace_rx
 endf
 
