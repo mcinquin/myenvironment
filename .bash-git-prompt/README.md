@@ -67,7 +67,7 @@ The symbols are as follows:
 - Local Status Symbols
   - ``✔``: repository clean
   - ``●n``: there are ``n`` staged files
-  - ``✖n``: there are ``n`` files with merge conflict(s)
+  - ``✖n``: there are ``n`` files with merge conflicts
   - ``✚n``: there are ``n`` changed but *unstaged* files
   - ``…n``: there are ``n`` untracked files
   - ``⚑n``: there are ``n`` stash entries
@@ -109,14 +109,15 @@ cd ~
 git clone https://github.com/magicmonty/bash-git-prompt.git .bash-git-prompt
 ```
 
-- Source the file `gitprompt.sh` from `~/.bashrc`
+Add to the `~/.bashrc`: 
+```
+  source ~/.bash-git-prompt/gitprompt.sh
+  GIT_PROMPT_ONLY_IN_REPO=1
+```
 
-### Configuration
+### All configs for .bashrc
 
 ```sh
-   # some other config in .bashrc
-
-   # gitprompt configuration
 
    # Set config variables first
    GIT_PROMPT_ONLY_IN_REPO=1
@@ -124,6 +125,7 @@ git clone https://github.com/magicmonty/bash-git-prompt.git .bash-git-prompt
    # GIT_PROMPT_FETCH_REMOTE_STATUS=0   # uncomment to avoid fetching remote status
 
    # GIT_PROMPT_SHOW_UPSTREAM=1 # uncomment to show upstream tracking branch
+   # GIT_PROMPT_SHOW_UNTRACKED_FILES=all # can be no, normal or all; determines counting of untracked files
 
    # GIT_PROMPT_STATUS_COMMAND=gitstatus_pre-1.7.10.sh # uncomment to support Git older than 1.7.10
 
@@ -135,6 +137,10 @@ git clone https://github.com/magicmonty/bash-git-prompt.git .bash-git-prompt
    # GIT_PROMPT_THEME=Solarized # use theme optimized for solarized color scheme
    source ~/.bash-git-prompt/gitprompt.sh
 ```
+
+You can set the `GIT_PROMPT_SHOW_UNTRACKED_FILES` variable to `no` or `normal` to speed things up if you have lots of
+untracked files in your repository. This can be the case for build systems that put their build artifacts in
+the subdirectory structure of the git repository.
 
 - `cd` to a git repository and test it!
 
@@ -197,7 +203,7 @@ If you use a custom theme in `.git-prompt-colors.sh`, please set `GIT_PROMPT_THE
   and end of the prompt by setting `GIT_PROMPT_START` and `GIT_PROMPT_END`
   before you source the `gitprompt.sh`.
 
-- The current git repo information is obtained by the script `gitstatus.sh`.  
+- The current git repo information is obtained by the script `gitstatus.sh`.
 - You can define `prompt_callback` function to tweak your prompt dynamically.
 
 ```sh
@@ -241,6 +247,11 @@ GIT_PROMPT_COMMAND_FAIL="${Red}✘-_LAST_COMMAND_STATE_ " # displays as ✘-1 fo
 
 - You can also ignore a repository completely by creating a file named ``.bash-git-rc`` with the
   content ``GIT_PROMPT_IGNORE=1`` in the root of your git repository.
+
+- If you have a repository with many untracked files, the git prompt can become very slow.
+  You can disable the display of untracked files on a per repository basis by setting
+  ``GIT_PROMPT_SHOW_UNTRACKED_FILES=no`` in your ``.bash-git-rc`` in the repository or
+  by disabling it globally in your ``.bashrc``
 
 - You can get help on the git prompt with the function ``git_prompt_help``.
   Examples are available with ``git_prompt_examples``.

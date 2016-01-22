@@ -74,9 +74,6 @@ function git_prompt_load_theme() {
 }
 
 function git_prompt_list_themes() {
-  local oldTheme
-  local oldThemeFile
-
   git_prompt_dir
   get_theme
 
@@ -335,10 +332,17 @@ function setGitPrompt() {
   fi
 
   unset GIT_PROMPT_IGNORE
+  OLD_GIT_PROMPT_SHOW_UNTRACKED_FILES=${GIT_PROMPT_SHOW_UNTRACKED_FILES}
+  unset GIT_PROMPT_SHOW_UNTRACKED_FILES
 
   if [[ -e "$repo/.bash-git-rc" ]]; then
     source "$repo/.bash-git-rc"
   fi
+
+  if [ -z "${GIT_PROMPT_SHOW_UNTRACKED_FILES}" ]; then
+    GIT_PROMPT_SHOW_UNTRACKED_FILES=${OLD_GIT_PROMPT_SHOW_UNTRACKED_FILES}
+  fi
+  unset OLD_GIT_PROMPT_SHOW_UNTRACKED_FILES
 
   if [[ "$GIT_PROMPT_IGNORE" = 1 ]]; then
     PS1="$EMPTY_PROMPT"
@@ -436,6 +440,12 @@ function updatePrompt() {
   export __GIT_PROMPT_IGNORE_STASH=${GIT_PROMPT_IGNORE_STASH}
   export __GIT_PROMPT_SHOW_UPSTREAM=${GIT_PROMPT_SHOW_UPSTREAM}
 
+  if [ -z "${GIT_PROMPT_SHOW_UNTRACKED_FILES}" ]; then
+    export __GIT_PROMPT_SHOW_UNTRACKED_FILES=all
+  else
+    export __GIT_PROMPT_SHOW_UNTRACKED_FILES=${GIT_PROMPT_SHOW_UNTRACKED_FILES}
+  fi
+
   local -a git_status_fields
   git_status_fields=($("$__GIT_STATUS_CMD" 2>/dev/null))
 
@@ -531,7 +541,8 @@ function gp_add_virtualenv_to_prompt {
 function is_function {
   declare -Ff "$1" >/dev/null;
 }
-#Helper function that truncates $PWD depending on window width
+
+# Helper function that truncates $PWD depending on window width
 function gp_truncate_pwd {
   local tilde="~"
   local newPWD="${PWD/#${HOME}/${tilde}}"
@@ -540,7 +551,7 @@ function gp_truncate_pwd {
   echo -n "$newPWD"
 }
 
-#Sets the window title to the given argument string
+# Sets the window title to the given argument string
 function gp_set_window_title {
   echo -ne "\033]0;"$@"\007"
 }
