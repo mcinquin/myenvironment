@@ -44,10 +44,11 @@ xterm*|rxvt*)
 esac
 
 # bash-git-prompt
-GIT_PROMPT_ONLY_IN_REPO=1
-GIT_PROMPT_THEME=Custom
-source ~/.bash-git-prompt/gitprompt.sh
-
+if [ -f ~/.bash-git-prompt/gitprompt.sh ]; then
+    source ~/.bash-git-prompt/gitprompt.sh
+    GIT_PROMPT_ONLY_IN_REPO=1
+    GIT_PROMPT_THEME=Custom
+fi
 
 
 #################
@@ -59,6 +60,8 @@ if [ "$TERM" != "dumb" ]; then
     alias ls='ls --color=auto'
     alias dir='ls --color=auto --format=vertical'
     alias vdir='ls --color=auto --format=long'
+    alias grep='grep --color=auto'
+    alias egrep='egrep --color=auto'
 fi
 
 
