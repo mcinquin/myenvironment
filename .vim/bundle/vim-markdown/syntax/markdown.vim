@@ -36,18 +36,23 @@ syn sync linebreaks=1
 
 let s:conceal = ''
 let s:concealends = ''
-if has('conceal')
+if has('conceal') && get(g:, 'vim_markdown_conceal', 1)
   let s:conceal = ' conceal'
   let s:concealends = ' concealends'
 endif
 
-"additions to HTML groups
-syn region htmlItalic start="\%(^\|\s\)\zs\*\ze[^\\\*\t ]" end="[^\\\*\t ]\zs\*\ze\_W" keepend
-syn region htmlItalic start="\%(^\|\s\)\zs_\ze[^\\_\t ]" end="[^\\_\t ]\zs_\ze\_W" keepend
-syn region htmlBold start="\*\*\ze\S" end="\S\zs\*\*" keepend
-syn region htmlBold start="__\ze\S" end="\S\zs__" keepend
-syn region htmlBoldItalic start="\*\*\*\ze\S" end="\S\zs\*\*\*" keepend
-syn region htmlBoldItalic start="___\ze\S" end="\S\zs___" keepend
+" additions to HTML groups
+if get(g:, 'vim_markdown_emphasis_multiline', 1)
+    let s:oneline = ''
+else
+    let s:oneline = ' oneline'
+endif
+execute 'syn region htmlItalic start="\%(^\|\s\)\zs\*\ze[^\\\*\t ]\%(\%([^*]\|\\\*\|\n\)*[^\\\*\t ]\)\?\*\_W" end="[^\\\*\t ]\zs\*\ze\_W" keepend' . s:oneline
+execute 'syn region htmlItalic start="\%(^\|\s\)\zs_\ze[^\\_\t ]" end="[^\\_\t ]\zs_\ze\_W" keepend' . s:oneline
+execute 'syn region htmlBold start="\*\*\ze\S" end="\S\zs\*\*" keepend' . s:oneline
+execute 'syn region htmlBold start="__\ze\S" end="\S\zs__" keepend' . s:oneline
+execute 'syn region htmlBoldItalic start="\*\*\*\ze\S" end="\S\zs\*\*\*" keepend' . s:oneline
+execute 'syn region htmlBoldItalic start="___\ze\S" end="\S\zs___" keepend' . s:oneline
 
 " [link](URL) | [link][id] | [link][] | ![image](URL)
 syn region mkdFootnotes matchgroup=mkdDelimiter start="\[^"    end="\]"
@@ -56,12 +61,12 @@ execute 'syn region mkdURL matchgroup=mkdDelimiter   start="("     end=")"  cont
 execute 'syn region mkdLink matchgroup=mkdDelimiter  start="\\\@<!!\?\[" end="\n\{-,1}[^]]\{-}\zs\]\ze[[(]" contains=@mkdNonListItem,@Spell nextgroup=mkdURL,mkdID skipwhite oneline' . s:concealends
 
 " Autolink without angle brackets.
-" mkd  inline links:           protocol   optional  user:pass@       sub/domain                 .com, .co.uk, etc      optional port   path/querystring/hash fragment
-"                            ------------ _____________________ --------------------------- ________________________ ----------------- __
-syntax match   mkdInlineURL /https\?:\/\/\(\w\+\(:\w\+\)\?@\)\?\([A-Za-z][-_0-9A-Za-z]*\.\)\{1,}\(\w\{2,}\.\?\)\{1,}\(:[0-9]\{1,5}\)\?\S*/
+" mkd  inline links:      protocol     optional  user:pass@  sub/domain                    .com, .co.uk, etc         optional port   path/querystring/hash fragment
+"                         ------------ _____________________ ----------------------------- _________________________ ----------------- __
+syn match   mkdInlineURL /https\?:\/\/\(\w\+\(:\w\+\)\?@\)\?\([A-Za-z0-9][-_0-9A-Za-z]*\.\)\{1,}\(\w\{2,}\.\?\)\{1,}\(:[0-9]\{1,5}\)\?\S*/
 
 " Autolink with parenthesis.
-syntax region  mkdInlineURL matchgroup=mkdDelimiter start="(\(https\?:\/\/\(\w\+\(:\w\+\)\?@\)\?\([A-Za-z][-_0-9A-Za-z]*\.\)\{1,}\(\w\{2,}\.\?\)\{1,}\(:[0-9]\{1,5}\)\?\S*)\)\@=" end=")"
+syn region  mkdInlineURL matchgroup=mkdDelimiter start="(\(https\?:\/\/\(\w\+\(:\w\+\)\?@\)\?\([A-Za-z0-9][-_0-9A-Za-z]*\.\)\{1,}\(\w\{2,}\.\?\)\{1,}\(:[0-9]\{1,5}\)\?\S*)\)\@=" end=")"
 
 " Autolink with angle brackets.
 syn region mkdInlineURL matchgroup=mkdDelimiter start="\\\@<!<\ze[a-z][a-z0-9,.-]\{1,22}:\/\/[^> ]*>" end=">"
@@ -150,7 +155,7 @@ HtmlHiLink mkdFootnote      Comment
 HtmlHiLink mkdBlockquote    Comment
 HtmlHiLink mkdListItem      Identifier
 HtmlHiLink mkdRule          Identifier
-HtmlHiLink mkdLineBreak     Todo
+HtmlHiLink mkdLineBreak     Visual
 HtmlHiLink mkdFootnotes     htmlLink
 HtmlHiLink mkdLink          htmlLink
 HtmlHiLink mkdURL           htmlString

@@ -11,12 +11,16 @@ Contents ~
   3. Set header folding level           |vim-markdown-set-header-folding-level|
   4. Disable Default Key Mappings   |vim-markdown-disable-default-key-mappings|
   5. Enable TOC window auto-fit       |vim-markdown-enable-toc-window-auto-fit|
-  6. Syntax Concealing                         |vim-markdown-syntax-concealing|
-  7. Syntax extensions                         |vim-markdown-syntax-extensions|
+  6. Text emphasis restriction to single-lines
+                       |vim-markdown-text-emphasis-restriction-to-single-lines|
+  7. Syntax Concealing                         |vim-markdown-syntax-concealing|
+  8. Fenced code block languages     |vim-markdown-fenced-code-block-languages|
+  9. Syntax extensions                         |vim-markdown-syntax-extensions|
    1. LaTeX math                                      |vim-markdown-latex-math|
    2. YAML Front Matter                        |vim-markdown-yaml-front-matter|
    3. TOML Front Matter                        |vim-markdown-toml-front-matter|
    4. JSON Front Matter                        |vim-markdown-json-front-matter|
+  10. Adjust new list item indent    |vim-markdown-adjust-new-list-item-indent|
  4. Mappings                                            |vim-markdown-mappings|
  5. Commands                                            |vim-markdown-commands|
  6. Credits                                              |vim-markdown-credits|
@@ -123,6 +127,16 @@ never increases its default size (half screen), it only shrinks.
   let g:vim_markdown_toc_autofit = 1
 <
 -------------------------------------------------------------------------------
+                       *vim-markdown-text-emphasis-restriction-to-single-lines*
+Text emphasis restriction to single-lines ~
+
+By default text emphasis works across multiple lines until a closing token is
+found. However, it's possible to restrict text emphasis to a single line (ie,
+for it to be applied a closing token must be found on the same line). To do so:
+>
+  let g:vim_markdown_emphasis_multiline = 0
+<
+-------------------------------------------------------------------------------
                                                *vim-markdown-syntax-concealing*
 Syntax Concealing ~
 
@@ -130,10 +144,33 @@ Concealing is set for some syntax.
 
 For example, conceal '[link text](link url)' as just 'link text'.
 
-To enable/disable conceal use Vim's standard conceal configuration.
+To enable conceal use Vim's standard conceal configuration.
 >
   set conceallevel=2
 <
+To disable conceal regardless of 'conceallevel' setting, add the following to
+your '.vimrc':
+>
+  let g:vim_markdown_conceal = 0
+<
+-------------------------------------------------------------------------------
+                                     *vim-markdown-fenced-code-block-languages*
+Fenced code block languages ~
+
+You can use filetype name as fenced code block languages for syntax
+highlighting. If you want to use different name from filetype, you can add it
+in your '.vimrc' like so:
+>
+  let g:vim_markdown_fenced_languages = ['csharp=cs']
+<
+This will cause the following to be highlighted using the 'cs' filetype syntax.
+>
+  ```csharp
+  ...
+  ```
+<
+Default is "['c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']".
+
 -------------------------------------------------------------------------------
                                                *vim-markdown-syntax-extensions*
 Syntax extensions ~
@@ -176,6 +213,26 @@ Highlight JSON front matter as used by Hugo [7].
 JSON syntax highlight requires vim-json [9].
 >
   let g:vim_markdown_json_frontmatter = 1
+<
+-------------------------------------------------------------------------------
+                                     *vim-markdown-adjust-new-list-item-indent*
+Adjust new list item indent ~
+
+You can adjust a new list indent. For example, you insert a single line like
+below:
+>
+  * item1
+<
+Then if you type 'o' to insert new line in vim and type '* item2', the result
+will be:
+>
+  * item1
+      * item2
+<
+vim-markdown automatically insert the indent. By default, the number of spaces
+of indent is 4. If you'd like to change the number as 2, just write:
+>
+  let g:vim_markdown_new_list_item_indent = 2
 <
 ===============================================================================
                                                         *vim-markdown-mappings*
@@ -284,7 +341,7 @@ The following requires ':filetype plugin on'.
 - ':Toct': Same as ':Toc' but in a new tab.
 
                                                                         *:Tocv*
-- ':Tocv': Same as ':Toc' for symmetry with ':Toch' and 'Tocv'.
+- ':Tocv': Same as ':Toc' for symmetry with ':Toch' and ':Tocv'.
 
 ===============================================================================
                                                          *vim-markdown-credits*

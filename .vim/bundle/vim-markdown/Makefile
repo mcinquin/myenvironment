@@ -13,6 +13,8 @@ install:
 	cp -v syntax/markdown.vim ${ADDONS}/syntax/markdown.vim
 	mkdir -pv ${ADDONS}/after/ftplugin
 	cp -v after/ftplugin/markdown.vim ${ADDONS}/after/ftplugin/markdown.vim
+	mkdir -pv ${ADDONS}/indent
+	cp -v indent/markdown.vim ${ADDONS}/indent/markdown.vim
 	mkdir -pv ${ADDONS}/doc
 	cp -v doc/vim-markdown.txt ${ADDONS}/doc/vim-markdown.txt
 	mkdir -pv ${REGISTRY}
@@ -45,14 +47,26 @@ build:
 	mkdir build
 
 doc: build/html2vimdoc build/vim-tools
-	sed '/^\(\[!\[Build Status\]\|1. \[\)/d' README.md > doc/tmp.md
+	sed -e '/^\[!\[Build Status\]/d' \
+	    -e '/^1\. \[/d' README.md > doc/tmp.md # remove table of contents
 	build/html2vimdoc/bin/python build/vim-tools/html2vimdoc.py -f vim-markdown \
 		doc/tmp.md | \
-		sed -e "s/\s*$$//; # remove trailing spaces" \
-		    -e "/^- '[^']*':\( \|$$\)/ { # match command lines" \
-		    -e "s/^- '\([^']*\)':\( \|$$\)/ \*\1\*\n\0/; # make command references" \
-		    -e ":a; s/^\(.\{1,78\}\n\)/ \1/; ta } # right align references" \
-		> doc/vim-markdown.txt && rm -f doc/tmp.md
+		sed -E -e "s/[[:space:]]*$$//" -e "# remove trailing spaces" \
+		    -e "/^.{79,}\|$$/ {" -e "# wrap table of contents over 79" \
+		    -e "h" -e "# save the matched line to the hold space" \
+		    -e "s/^(.*) (\|[^|]*\|)$$/\1/" -e "# make content title" \
+		    -e "p" -e "# print title" \
+		    -e "g" -e "# restore the matched line" \
+		    -e "s/^.* (\|[^|]*\|)$$/ \1/" -e "# make link" \
+		    -e ":c" -e "s/^(.{1,78})$$/ \1/" -e "tc" -e "# align right" \
+		    -e "}" \
+		    -e "/^- '[^']*':( |$$)/ {" \
+		    -e "h" -e "# save the matched line to the hold space" \
+		    -e "s/^- '([^']*)':.*/ \*\1\*/" -e "# make command reference" \
+		    -e ":a" -e "s/^(.{1,78})$$/ \1/" -e "ta" -e "# align right" \
+		    -e "G" -e "# append the matched line after the command reference" \
+		    -e "}" > doc/vim-markdown.txt && rm -f doc/tmp.md
+
 .PHONY: doc
 
 # Prerequire Python and virtualenv.
