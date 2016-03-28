@@ -1,3 +1,8 @@
+Before:
+  unlet! b:mkd_known_filetypes
+  unlet! b:mkd_included_filetypes
+  unlet! g:vim_markdown_math
+
 Given markdown;
 a **b** c
 
@@ -153,6 +158,14 @@ Given markdown;
 
 Execute (not italic with an asterisk):
   AssertNotEqual SyntaxOf('a'), 'htmlItalic'
+
+Given markdown;
+[__](a) b
+
+Execute (not bold with double underscores):
+  AssertNotEqual SyntaxOf('_'), 'htmlBold'
+  AssertNotEqual SyntaxOf('a'), 'htmlBold'
+  AssertNotEqual SyntaxOf('b'), 'htmlBold'
 
 # Links
 
@@ -416,6 +429,36 @@ Execute (fenced code block syntax with a language specifier):
   AssertEqual SyntaxOf('def'), 'rubyDefine'
 
 Given markdown;
+``` c++
+#include <iostream>
+code
+```
+
+```  vim
+let g:a = 1
+```
+
+```	ruby
+def a
+end
+```
+
+```
+ruby
+class B
+end
+```
+
+Execute (fenced code block syntax with a language specifier after whitespace):
+  let b:func = Markdown_GetFunc('vim-markdown/ftplugin/markdown.vim', 'MarkdownRefreshSyntax')
+  call b:func(0)
+  AssertEqual SyntaxOf('include'), 'cInclude'
+  AssertEqual SyntaxOf('code'), 'mkdSnippetCPP'
+  AssertEqual SyntaxOf('g:a'), 'vimVar'
+  AssertEqual SyntaxOf('def'), 'rubyDefine'
+  AssertNotEqual SyntaxOf('class'), 'rubyClass'
+
+Given markdown;
 ```vim
 let g:a = 1
 ```
@@ -531,22 +574,22 @@ c $$y$$ d
 \$\$f\$\$
 
 Execute (math):
-  AssertNotEqual SyntaxOf('x'), 'mkdMath'
-  AssertNotEqual SyntaxOf('y'), 'mkdMath'
+  AssertNotEqual SyntaxOf('x')[0:2], 'tex'
+  AssertNotEqual SyntaxOf('y')[0:2], 'tex'
   let g:vim_markdown_math=1
   syn off | syn on
-  AssertNotEqual SyntaxOf('a'), 'mkdMath'
-  AssertNotEqual SyntaxOf('b'), 'mkdMath'
-  AssertNotEqual SyntaxOf('c'), 'mkdMath'
-  AssertNotEqual SyntaxOf('d'), 'mkdMath'
-  AssertNotEqual SyntaxOf('e'), 'mkdMath'
-  AssertNotEqual SyntaxOf('f'), 'mkdMath'
-  AssertEqual SyntaxOf('x'), 'mkdMath'
-  AssertEqual SyntaxOf('y'), 'mkdMath'
+  AssertNotEqual SyntaxOf('a')[0:2], 'tex'
+  AssertNotEqual SyntaxOf('b')[0:2], 'tex'
+  AssertNotEqual SyntaxOf('c')[0:2], 'tex'
+  AssertNotEqual SyntaxOf('d')[0:2], 'tex'
+  AssertNotEqual SyntaxOf('e')[0:2], 'tex'
+  AssertNotEqual SyntaxOf('f')[0:2], 'tex'
+  AssertEqual SyntaxOf('x')[0:2], 'tex'
+  AssertEqual SyntaxOf('y')[0:2], 'tex'
   let g:vim_markdown_math=0
   syn off | syn on
-  AssertNotEqual SyntaxOf('x'), 'mkdMath'
-  AssertNotEqual SyntaxOf('y'), 'mkdMath'
+  AssertNotEqual SyntaxOf('x')[0:2], 'tex'
+  AssertNotEqual SyntaxOf('y')[0:2], 'tex'
 
 Given markdown;
 a
@@ -560,9 +603,9 @@ c
 Execute (multiline math):
   let g:vim_markdown_math=1
   syn off | syn on
-  AssertNotEqual SyntaxOf('a'), 'mkdMath'
-  AssertEqual SyntaxOf('b'), 'mkdMath'
-  AssertNotEqual SyntaxOf('c'), 'mkdMath'
+  AssertNotEqual SyntaxOf('a')[0:2], 'tex'
+  AssertEqual SyntaxOf('b')[0:2], 'tex'
+  AssertNotEqual SyntaxOf('c')[0:2], 'tex'
 
 Given markdown;
 $ \sqrt{a}{b} $
@@ -577,6 +620,68 @@ Execute (math tex highlighting):
   syn off | syn on
   AssertEqual SyntaxOf('sqrt'), 'texStatement'
   AssertEqual SyntaxOf('frac'), 'texStatement'
+
+Given markdown;
+$a b[$ c
+
+Execute (math ends with $):
+  let g:vim_markdown_math=1
+  syn off | syn on
+  AssertEqual SyntaxOf('a')[0:2], 'tex'
+  AssertEqual SyntaxOf('b')[0:2], 'tex'
+  AssertNotEqual SyntaxOf('c')[0:2], 'tex'
+
+Given markdown;
+$$a b[$$ c
+
+Execute (math ends with $$):
+  let g:vim_markdown_math=1
+  syn off | syn on
+  AssertEqual SyntaxOf('a')[0:2], 'tex'
+  AssertEqual SyntaxOf('b')[0:2], 'tex'
+  AssertNotEqual SyntaxOf('c')[0:2], 'tex'
+
+Given markdown;
+$(0 \le 1)$
+
+Execute (math conceal in $):
+  if has('conceal')
+    setlocal conceallevel=2
+    let g:vim_markdown_math=1
+    syn off | syn on
+    AssertEqual synconcealed(1, 1)[0], 1, '$'
+    AssertEqual synconcealed(1, 2)[0], 0
+    AssertEqual synconcealed(1, 3)[0], 0
+    AssertEqual synconcealed(1, 4)[0], 0
+    AssertEqual synconcealed(1, 5)[0], 1, '\le'
+    AssertEqual synconcealed(1, 6)[0], 1
+    AssertEqual synconcealed(1, 7)[0], 1
+    AssertEqual synconcealed(1, 8)[0], 0
+    AssertEqual synconcealed(1, 9)[0], 0
+    AssertEqual synconcealed(1, 10)[0], 0
+    AssertEqual synconcealed(1, 11)[0], 1, '$'
+    setlocal conceallevel=0
+  endif
+
+Given markdown;
+$$
+\omega
+0 \le 1
+$$
+
+Execute (math conceal in $$):
+  if has('conceal')
+    setlocal conceallevel=2
+    let g:vim_markdown_math=1
+    syn off | syn on
+    AssertEqual synconcealed(1, 1)[0], 1, '$$'
+    AssertEqual synconcealed(2, 1)[0], 1, '\omega'
+    AssertEqual synconcealed(3, 1)[0], 0, '0'
+    AssertEqual synconcealed(3, 3)[0], 1, '\le'
+    AssertEqual synconcealed(3, 7)[0], 0, '1'
+    AssertEqual synconcealed(4, 1)[0], 1, '$$'
+    setlocal conceallevel=0
+  endif
 
 # YAML frontmatter
 
