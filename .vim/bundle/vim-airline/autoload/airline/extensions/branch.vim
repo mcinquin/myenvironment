@@ -73,7 +73,7 @@ function! s:get_git_untracked(file)
   if has_key(s:untracked_git, a:file)
     let untracked = s:untracked_git[a:file]
   else
-    let output    = system('git status --porcelain -- '. a:file)
+    let output    = system('git status --porcelain -- '. shellescape(a:file))
     if output[0:1] is# '??' && output[3:-2] is? a:file
       let untracked = get(g:, 'airline#extensions#branch#notexists', g:airline_symbols.notexists)
     endif
@@ -92,7 +92,7 @@ function! s:get_hg_untracked(file)
     if has_key(s:untracked_hg, a:file)
       let untracked = s:untracked_hg[a:file]
     else
-      let untracked = (system('hg status -u -- '. a:file)[0] is# '?'  ?
+      let untracked = (system('hg status -u -- '. shellescape(a:file))[0] is# '?'  ?
             \ get(g:, 'airline#extensions#branch#notexists', g:airline_symbols.notexists) : '')
       let s:untracked_hg[a:file] = untracked
     endif
@@ -141,6 +141,7 @@ function! airline#extensions#branch#head()
       endif
     endif
   else
+    let b:airline_head = get(b:, 'airline_head', '')
     for vcs in l:vcs_priority
       if has_key(l:heads, vcs)
         if !empty(b:airline_head)
