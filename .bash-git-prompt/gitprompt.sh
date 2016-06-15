@@ -66,6 +66,15 @@ function get_theme() {
   fi
 }
 
+function git_prompt_load_colors() {
+  if gp_set_file_var __PROMPT_COLORS_FILE prompt-colors.sh ; then
+    # outsource the color defs
+    source "$__PROMPT_COLORS_FILE"
+  else
+    echo 1>&2 "Cannot find prompt-colors.sh!"
+  fi
+}
+
 function git_prompt_load_theme() {
   get_theme
   local DEFAULT_THEME_FILE="${__GIT_PROMPT_DIR}/themes/Default.bgptheme"
@@ -74,6 +83,7 @@ function git_prompt_load_theme() {
 }
 
 function git_prompt_list_themes() {
+  git_prompt_load_colors
   git_prompt_dir
   get_theme
 
@@ -207,11 +217,7 @@ function git_prompt_config() {
   #  prompt-colors.sh -- sets generic color names suitable for bash 'PS1' prompt
   #  git-prompt-colors.sh -- sets the GIT_PROMPT color scheme, using names from prompt-colors.sh
 
-  if gp_set_file_var __PROMPT_COLORS_FILE prompt-colors.sh ; then
-    source "$__PROMPT_COLORS_FILE"        # outsource the color defs
-  else
-    echo 1>&2 "Cannot find prompt-colors.sh!"
-  fi
+  git_prompt_load_colors
 
   # source the user's ~/.git-prompt-colors.sh file, or the one that should be
   # sitting in the same directory as this script
@@ -284,6 +290,7 @@ function git_prompt_config() {
     fi
     # __GIT_STATUS_CMD defined
   fi
+  unset GIT_BRANCH
 }
 
 function setLastCommandState() {
@@ -449,7 +456,7 @@ function updatePrompt() {
   local -a git_status_fields
   git_status_fields=($("$__GIT_STATUS_CMD" 2>/dev/null))
 
-  local GIT_BRANCH=$(replaceSymbols ${git_status_fields[0]})
+  export GIT_BRANCH=$(replaceSymbols ${git_status_fields[0]})
   local GIT_REMOTE="$(replaceSymbols ${git_status_fields[1]})"
   if [[ "." == "$GIT_REMOTE" ]]; then
     unset GIT_REMOTE
@@ -517,7 +524,7 @@ function updatePrompt() {
     NEW_PROMPT="$EMPTY_PROMPT"
   fi
 
-  PS1="${NEW_PROMPT//_LAST_COMMAND_INDICATOR_/${LAST_COMMAND_INDICATOR}}"
+  PS1="${NEW_PROMPT//_LAST_COMMAND_INDICATOR_/${LAST_COMMAND_INDICATOR}${ResetColor}}"
 }
 
 # Helper function that returns virtual env information to be set in prompt
@@ -553,7 +560,7 @@ function gp_truncate_pwd {
 
 # Sets the window title to the given argument string
 function gp_set_window_title {
-  echo -ne "\033]0;"$@"\007"
+  echo -ne "\[\033]0;"$@"\007\]"
 }
 
 function prompt_callback_default {
