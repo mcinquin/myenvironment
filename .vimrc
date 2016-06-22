@@ -138,3 +138,6 @@ let g:pymode_lint_comment_symbol = '♯'
 let g:pymode_lint_visual_symbol ='ⓥ'
 let g:pymode_lint_info_symbol = '✆'
 let g:pymode_lint_pyflakes_symbol = 'Π'
+
+"prevent vim to add garbage characters in eof
+:set t_RV=
