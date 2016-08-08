@@ -1,8 +1,8 @@
 " @Author:      Tom Link (micathom AT gmail com?subject=[vim])
 " @Created:     2007-04-10.
-" @Last Change: 2016-03-22.
+" @Last Change: 2016-07-28.
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    815
+" @Revision:    817
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " GetLatestVimScripts: 1863 1 tlib.vim
 " tlib.vim -- Some utility functions
@@ -14,7 +14,7 @@ if v:version < 700 "{{{2
     echoerr "tlib requires Vim >= 7"
     finish
 endif
-let g:loaded_tlib = 121
+let g:loaded_tlib = 122
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -91,6 +91,8 @@ command! -nargs=+ -bang Tlibtrace :
 " :Tlibtraceset +RX1, -RX2...
 " If |tlib#trace#Enable()| was called: With the optional <bang>, users 
 " can add and remove GUARDs (actually a |regexp|) that should be traced.
+"
+" If no `+` or `-` is prepended, assume `+`.
 command! -nargs=+ -bang Tlibtraceset call tlib#trace#Set(<q-args>)
 
 
