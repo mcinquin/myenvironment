@@ -1,6 +1,8 @@
 " MIT License. Copyright (c) 2013-2016 Bailey Ling.
 " vim: et ts=2 sts=2 sw=2
 
+scriptencoding utf-8
+
 let s:parts = {}
 
 " PUBLIC API {{{
@@ -51,7 +53,7 @@ endfunction
 " }}}
 
 function! airline#parts#mode()
-  return get(w:, 'airline_current_mode', '')
+  return airline#util#shorten(get(w:, 'airline_current_mode', ''), 79, 1)
 endfunction
 
 function! airline#parts#crypt()
