@@ -2,6 +2,9 @@ startup_message off
 vbell off
 escape ^Aa
 
+bindkey "^A^[[1;5C" next
+bindkey "^A^[[1;5D" prev
+
 defutf8 on #Force UTF-8
 
 caption always "%{= Kw}%{g}[ %{w}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][ %{W}%l %{g}]"
