@@ -2,6 +2,7 @@ startup_message off
 vbell off
 escape ^Aa
 
+#Switching windows with arrow keys
 bindkey "^A^[[1;5C" next
 bindkey "^A^[[1;5D" prev
 
