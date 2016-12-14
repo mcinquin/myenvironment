@@ -130,7 +130,7 @@ autocmd FileType python map <buffer> <F6> :PymodeLintAuto<CR>
 let g:pymode_lint_on_fly = 1
 let g:pymode_lint_on_write = 1
 let g:pymode_lint_checkers = ['pyflakes', 'pep8']
-let g:pymode_lint_ignore = "E501,W0401,E128"
+let g:pymode_lint_ignore = "E15,E501,W0401,E128"
 let g:pymode_lint_error_symbol = '✘'
 let g:pymode_lint_todo_symbol = '⚠'
 let g:pymode_lint_docs_symbol = '✍'
@@ -138,6 +138,7 @@ let g:pymode_lint_comment_symbol = '♯'
 let g:pymode_lint_visual_symbol ='ⓥ'
 let g:pymode_lint_info_symbol = '✆'
 let g:pymode_lint_pyflakes_symbol = 'Π'
+let g:pymode_rope_complete_on_dot = 0
 
 "prevent vim to add garbage characters in eof
 :set t_RV=
