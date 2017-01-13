@@ -1,9 +1,0 @@
-[Nemo Action]
-Active=true
-Name=Compress...
-Comment=compress %N
-Exec=file-roller -d %F
-Icon-Name=gnome-mime-application-x-compress
-Selection=Any
-Extensions=any;
-Quote=double
