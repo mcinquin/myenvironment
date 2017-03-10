@@ -1,30 +1,25 @@
 [global_config]
   enabled_plugins = CustomCommandsMenu, TerminalShot, APTURLHandler
-  window_state = maximise
   suppress_multiple_term_dialog = True
+  window_state = maximise
+  always_split_with_profile = True
 [keybindings]
-  paste = <Control><Shift>v
   copy = <Control><Shift>c
-  split_vert = <Control><Alt>v
+  paste = <Control><Shift>v
   split_horiz = <Control><Alt>h
-[profiles]
-  [[default]]
-    background_darkness = 0.81
-    background_image = None
-    background_type = transparent
-    foreground_color = "#9a9a9a"
-  [[Shini]]
-    background_darkness = 0.83
-    background_image = None
-    background_type = transparent
-    foreground_color = "#9a9a9a"
+  split_vert = <Control><Alt>v
 [layouts]
   [[default]]
     [[[child1]]]
-      type = Terminal
       parent = window0
-      profile = Shini
+      profile = Default
+      type = Terminal
     [[[window0]]]
-      type = Window
       parent = ""
+      type = Window
 [plugins]
+[profiles]
+  [[default]]
+    background_image = None
+    background_color = "#212121"
+    foreground_color = "#9a9a9a"
