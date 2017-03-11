@@ -1,8 +1,8 @@
 [global_config]
+  always_split_with_profile = True
   enabled_plugins = CustomCommandsMenu, TerminalShot, APTURLHandler
   suppress_multiple_term_dialog = True
   window_state = maximise
-  always_split_with_profile = True
 [keybindings]
   copy = <Control><Shift>c
   paste = <Control><Shift>v
@@ -20,6 +20,7 @@
 [plugins]
 [profiles]
   [[default]]
+    background_color = "#1a1a1a"
     background_image = None
-    background_color = "#212121"
-    foreground_color = "#9a9a9a"
+    cursor_color = "#e1e1e1"
+    palette = "#000000:#cc0000:#4e9a06:#c4a000:#3465a4:#75507b:#06989a:#d3d7cf:#555753:#ef2929:#8ae234:#fce94f:#729fcf:#ad7fa8:#34e2e2:#eeeeec"
