@@ -54,14 +54,14 @@ set t_Co=256
 set background=dark
 if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"))
     let g:solarized_termcolors=256
-    let g:solarized_termtrans=1
+    let g:solarized_termtrans=0
     let g:solarized_contrast="normal"
     let g:solarized_visibility="normal"
     color solarized
 endif
 
-
-"hi Comment term=bold cterm=NONE ctermfg=DarkCyan ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
+hi Comment term=bold cterm=NONE ctermfg=DarkGray ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
+hi Normal term=bold cterm=NONE ctermfg=Gray ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
 
 "-Add changelog in spec file-
 autocmd BufRead *.spec noremap <F7> /%changelog<cr>:r!LC_ALL=C date +"\%a \%b \%d \%Y"<CR>I* <esc>A Mathieu Cinquin <mcinquin@merethis.net><CR>Release <esc>/Version:<cr>$T v$hy/Release <cr>$pa-<esc>/Release:<cr>$T v$hy/Release <cr>$po-<cr>
