@@ -20,8 +20,9 @@
 [plugins]
 [profiles]
   [[default]]
-    background_color = "#0e1019"
+    background_color = "#222222"
     background_image = None
     cursor_color = "#cecece"
-    foreground_color = "#fffaf4"
-    palette = "#232323:#ff000f:#8ce10b:#ffb900:#008df8:#6d43a6:#00d8eb:#ffffff:#444444:#ff2740:#abe15b:#ffd242:#0092ff:#9a5feb:#67fff0:#ffffff"
+    font = Monospace 10
+    foreground_color = "#bdbaae"
+    palette = "#15171c:#ec5f67:#81a764:#fec254:#5486c0:#bf83c1:#57c2c1:#efece7:#555555:#ff6973:#93d493:#ffd256:#4d84d1:#ff55ff:#57c2c1:#ffffff"
