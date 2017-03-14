@@ -14,7 +14,7 @@ POWERLEVEL9K_STATUS_VERBOSE=true
 POWERLEVEL9K_STATUS_OK_IN_NON_VERBOSE=true
 POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=''
-POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX="%K{white}%F{black} \Uf017 `date +%T` %f%k%F{white}%f "
+POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX="%K{0252}%F{black} \Uf017 `date +%T` %f%k%F{0252}%f "
 POWERLEVEL9K_SHORTEN_DIR_LENGTH=3
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(background_jobs status_joined context dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(ip)
@@ -59,3 +59,8 @@ eval $(dircolors)
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias svi="sudo vi"
 alias service="sudo service"
+
+# User's Variables
+export VAULT_ADDR=https://vault.sigfox.io:8200
+export VAULT_TOKEN=6eeca6c0-0549-f841-4198-5dc67883ac03
+export VAULT_CACERT=/home/mcinquin/SECURE/SIGFOX/CERTIFICATES/sub.class2.server.ca.pem

@@ -801,7 +801,7 @@ prompt_ip() {
     fi
   fi
 
-  "$1_prompt_segment" "$0" "$2" "white" "$DEFAULT_COLOR" "$ip" 'NETWORK_ICON'
+  "$1_prompt_segment" "$0" "$2" "0252" "$DEFAULT_COLOR" "$ip" 'NETWORK_ICON'
 }
 
 prompt_load() {
