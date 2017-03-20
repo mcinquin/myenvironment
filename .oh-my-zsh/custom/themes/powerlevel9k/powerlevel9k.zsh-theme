@@ -333,7 +333,7 @@ prompt_background_jobs() {
     if [[ "$POWERLEVEL9K_BACKGROUND_JOBS_VERBOSE" == "true" ]] && [[ "$background_jobs_number" -gt 1 ]]; then
       background_jobs_number_print="$background_jobs_number"
     fi
-    "$1_prompt_segment" "$0" "$2" "$DEFAULT_COLOR" "red" "$background_jobs_number_print" 'BACKGROUND_JOBS_ICON'
+    "$1_prompt_segment" "$0" "$2" "$DEFAULT_COLOR" "cyan" "$background_jobs_number_print" 'BACKGROUND_JOBS_ICON'
   fi
 }
 
@@ -544,8 +544,8 @@ prompt_context() {
   local current_state="DEFAULT"
   typeset -AH context_states
   context_states=(
-    "ROOT"      "red"
-    "DEFAULT"   "green"
+    "ROOT"      "yellow"
+    "DEFAULT"   "011"
   )
 
   local content=""
@@ -801,7 +801,7 @@ prompt_ip() {
     fi
   fi
 
-  "$1_prompt_segment" "$0" "$2" "0252" "$DEFAULT_COLOR" "$ip" 'NETWORK_ICON'
+  "$1_prompt_segment" "$0" "$2" "cyan" "$DEFAULT_COLOR" "$ip" 'NETWORK_ICON'
 }
 
 prompt_load() {
