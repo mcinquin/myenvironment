@@ -73,9 +73,3 @@ source ~/z.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias svi="sudo vi"
 alias service="sudo service"
-
-# User's Variables
-export VAULT_ADDR=https://vault.sigfox.io:8200
-#export VAULT_TOKEN=b229f4d5-59b7-457a-15e7-92c2e9ac69c7
-export VAULT_CACERT=/home/mcinquin/SECURE/SIGFOX/CERTIFICATES/sub.class2.server.ca.pem
-export VAULT_CAPATH=/etc/ssl/certs
