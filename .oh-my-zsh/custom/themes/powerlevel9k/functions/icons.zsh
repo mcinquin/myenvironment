@@ -116,6 +116,7 @@ case $POWERLEVEL9K_MODE in
       HOME_SUB_ICON                  $'\uF07C'              # 
       FOLDER_ICON                    $'\uF115'              # 
       NETWORK_ICON                   $'\uF09E'              # 
+      VPN_ICON                       $'\uF023'              # 
       LOAD_ICON                      $'\uF080 '             # 
       SWAP_ICON                      $'\uF0E4'              # 
       RAM_ICON                       $'\uF0E4'              # 

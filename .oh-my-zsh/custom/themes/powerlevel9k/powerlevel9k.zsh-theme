@@ -804,6 +804,18 @@ prompt_ip() {
   "$1_prompt_segment" "$0" "$2" "cyan" "$DEFAULT_COLOR" "$ip" 'NETWORK_ICON'
 }
 
+prompt_vpn_ip() {
+  if defined POWERLEVEL9K_VPN_IP_INTERFACE; then
+    vpn_status=$(nmcli connection show --active |grep $POWERLEVEL9K_VPN_IP_INTERFACE | awk '{print $4}')
+    if [[ "$vpn_status" == "$POWERLEVEL9K_VPN_IP_INTERFACE" ]]; then
+      # Get the IP address of the specified interface.
+      ip=$(ip -4 a show "$POWERLEVEL9K_VPN_IP_INTERFACE" | grep -o "inet\s*[0-9.]*" | grep -o "[0-9.]*")
+      "$1_prompt_segment" "$0" "$2" "cyan" "$DEFAULT_COLOR" "$ip" 'VPN_ICON'
+    fi
+  fi
+}
+
+
 prompt_load() {
   # The load segment can have three different states
   local current_state="unknown"
