@@ -5,6 +5,9 @@
 alias apse='apt search'
 compdef _apse apse='apt search'
 
+alias apsh='apt show'
+compdef _apsh apsh='apt show'
+
 alias apsf='apt-file search --regexp'
 compdef _apsf apsf='apt-file search --regexp'
 
