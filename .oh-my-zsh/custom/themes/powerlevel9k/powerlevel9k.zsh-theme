@@ -804,7 +804,6 @@ prompt_ip() {
   "$1_prompt_segment" "$0" "$2" "cyan" "$DEFAULT_COLOR" "$ip" 'NETWORK_ICON'
 }
 
-
 prompt_vpn_ip() {
   if defined POWERLEVEL9K_VPN_IP_INTERFACE; then
     for vpn_iface in $(nmcli connection show --active |grep $POWERLEVEL9K_VPN_IP_INTERFACE | awk '{print $4}')
@@ -814,7 +813,6 @@ prompt_vpn_ip() {
     done
   fi
 }
-
 
 prompt_load() {
   # The load segment can have three different states
