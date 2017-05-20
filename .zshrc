@@ -6,6 +6,9 @@ export ZSH=/home/shini/.oh-my-zsh
 
 export TERM="xterm-256color"
 
+DISABLE_UPDATE_PROMPT=true
+DISABLE_AUTO_UPDATE=true
+
 # ZSH THEMES
 POWERLEVEL9K_MODE="awesome-fontconfig"
 ZSH_THEME="powerlevel9k/powerlevel9k"
