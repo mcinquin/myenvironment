@@ -29,7 +29,11 @@ Currently this repository contains the following themes:
 =======
 =======
     * alduin
+<<<<<<< HEAD
 >>>>>>> 205f6964be55d17c908baaf89066928090b02729
+=======
+    * angr
+>>>>>>> 08c76e4cd0cdaa12c476ed03b920912173e31339
     * aurora
     * badcat
     * badwolf
@@ -81,6 +85,7 @@ Currently this repository contains the following themes:
     * cobalt2
     * cool
     * dark
+    * deus
     * distinguished
     * durant
     * faryfloss
@@ -215,6 +220,15 @@ Has no effect if using true/24-bit color. To enable 16-color mode: >
 described in the installation notes for the joshdick/onedark.vim colorscheme:
 (https://github.com/joshdick/onedark.vim#installation)
 
+                                                       *airline-theme-deus*
+
+*g:deus_termcolors*
+
+Set to 256 for 256-color mode (the default), or 16 for 16-color mode.
+Has no effect if using true/24-bit color. To enable 16-color mode: >
+
+    let g:onedark_termcolors = 16
+<
 ==============================================================================
 CONTRIBUTIONS                                *airline-themes-contributions*
 
