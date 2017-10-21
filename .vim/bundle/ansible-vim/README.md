@@ -9,7 +9,11 @@ This is a vim syntax plugin for Ansible 2.0, it supports YAML playbooks, Jinja2 
 - Jinja2 templates are detected if they have a *.j2* suffix
 - Files named `hosts` will be treated as Ansible hosts files
 
-You can also set the filetype to `ansible`, `ansible_template`, or `ansible_hosts` if auto-detection does not work (e.g. `:set ft=ansible`). **Note**: If you want to detect a custom pattern of your own, you can easily add this in your `.vimrc` using [this method](http://vim.wikia.com/wiki/Change_filetype_based_on_directory_path) - you do not need to fork just to do this! :)
+You can also set the filetype to `ansible`, `ansible_template`, or `ansible_hosts` if auto-detection does not work (e.g. `:set ft=ansible`). **Note**: If you want to detect a custom pattern of your own, you can easily add this in your `.vimrc` using something like this:
+
+```vim
+au BufRead,BufNewFile */playbooks/*.yml set filetype=ansible
+```
 
 This plugin should be quite reliable, as it sources the original formats and simply modifies the highlights as appropriate. This also enables a focus on simplicity and configurability instead of patching bad syntax detection.
 
@@ -26,7 +30,9 @@ Use your favorite plugin manager, or try [vim-plug](https://github.com/junegunn/
 **vim-plug:** `Plug 'pearofducks/ansible-vim'`
 
 **vim-plug with post-update hook:** `Plug 'pearofducks/ansible-vim', { 'do':
-'./UltiSnips/generate.py' }`
+'cd ./UltiSnips; python2 generate.py' }`
+
+*Note: `generate.py` requires Ansible 2.4 or later.*
 
 **vundle:** `Plugin 'pearofducks/ansible-vim'`
 
