@@ -18,7 +18,7 @@ CONTENTS                                           *airline-theme-contents*
 INTRODUCTION                                         *airline-themes-intro*
 
 This is a plugin for vim-airline and provides several themes to be used in
-conjuction with |vim-airline|
+conjunction with |vim-airline|
 
 ==============================================================================
 FEATURES                                              *airline-themes-list*
@@ -33,7 +33,11 @@ Currently this repository contains the following themes:
 >>>>>>> 205f6964be55d17c908baaf89066928090b02729
 =======
     * angr
+<<<<<<< HEAD
 >>>>>>> 08c76e4cd0cdaa12c476ed03b920912173e31339
+=======
+    * atomic
+>>>>>>> 753ecfee61e6d9321163f167ab7ba38a716b45b7
     * aurora
     * badcat
     * badwolf
@@ -85,6 +89,7 @@ Currently this repository contains the following themes:
     * cobalt2
     * cool
     * dark
+    * dark_minimal
     * deus
     * distinguished
     * durant
@@ -113,6 +118,7 @@ Currently this repository contains the following themes:
     * sierra
     * silver
     * simple
+    * soda
     * sol
     * solarized (|airline-theme-solarized|)
     * term
@@ -134,6 +140,13 @@ g:airline_theme in your |.vimrc|  like this: >
 
     :let g:airline_theme='dark'
 <
+                                                  *airline-theme-dark_minimal*
+
+This is a copy of the dark.vim theme, however it does not change colors in
+the different modes, so should bring some performance improvements because
+airline does not have to redefine highlighting groups after they have been
+setup once. However, it won't change colors if e.g. the mode changes.
+
                                                   *airline-theme-solarized*
 *g:solarized_base16*
 
