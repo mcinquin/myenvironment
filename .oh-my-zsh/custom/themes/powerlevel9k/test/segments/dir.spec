@@ -72,6 +72,26 @@ function testTruncationFromRightWorks() {
   unset POWERLEVEL9K_SHORTEN_STRATEGY
 }
 
+function testTruncationFromRightWithEmptyDelimiter() {
+  POWERLEVEL9K_SHORTEN_DIR_LENGTH=2
+  POWERLEVEL9K_SHORTEN_DELIMITER=""
+  POWERLEVEL9K_SHORTEN_STRATEGY='truncate_from_right'
+
+  FOLDER=/tmp/powerlevel9k-test/1/12/123/1234/12345/123456/1234567/12345678/123456789
+  mkdir -p $FOLDER
+  cd $FOLDER
+
+  assertEquals "%K{blue} %F{black}/tmp/po/1/12/123/12/12/12/12/12/123456789 %k%F{blue}%f " "$(build_left_prompt)"
+
+  cd -
+  rm -fr /tmp/powerlevel9k-test
+
+  unset FOLDER
+  unset POWERLEVEL9K_SHORTEN_DIR_LENGTH
+  unset POWERLEVEL9K_SHORTEN_DELIMITER
+  unset POWERLEVEL9K_SHORTEN_STRATEGY
+}
+
 function testTruncateWithFolderMarkerWorks() {
   POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir)
   POWERLEVEL9K_SHORTEN_STRATEGY="truncate_with_folder_marker"
@@ -272,6 +292,31 @@ function testChangingDirPathSeparator() {
   unset POWERLEVEL9K_DIR_PATH_SEPARATOR
 }
 
+function testHomeFolderAbbreviation() {
+  local POWERLEVEL9K_HOME_FOLDER_ABBREVIATION
+  local dir=$PWD
+
+  cd ~/
+  # default
+  POWERLEVEL9K_HOME_FOLDER_ABBREVIATION='~'
+  assertEquals "%K{blue} %F{black}~ %k%F{blue}%f " "$(build_left_prompt)"
+
+  # substituted
+  POWERLEVEL9K_HOME_FOLDER_ABBREVIATION='qQq'
+  assertEquals "%K{blue} %F{black}qQq %k%F{blue}%f " "$(build_left_prompt)"
+
+  cd /tmp
+  # default
+  POWERLEVEL9K_HOME_FOLDER_ABBREVIATION='~'
+  assertEquals "%K{blue} %F{black}/tmp %k%F{blue}%f " "$(build_left_prompt)"
+
+  # substituted
+  POWERLEVEL9K_HOME_FOLDER_ABBREVIATION='qQq'
+  assertEquals "%K{blue} %F{black}/tmp %k%F{blue}%f " "$(build_left_prompt)"
+
+  cd "$dir"
+}
+
 function testOmittingFirstCharacterWorks() {
   POWERLEVEL9K_DIR_OMIT_FIRST_CHARACTER=true
   POWERLEVEL9K_FOLDER_ICON='folder-icon'
@@ -352,6 +397,27 @@ function testOmittingFirstCharacterWorksWithChangingPathSeparatorAndRightTruncat
   cd /tmp/powerlevel9k-test/1/2
 
   assertEquals "%K{blue} %F{black}tmpxXxpo…xXx1xXx2 %k%F{blue}%f " "$(build_left_prompt)"
+
+  cd -
+  rm -fr /tmp/powerlevel9k-test
+  unset POWERLEVEL9K_DIR_PATH_SEPARATOR
+  unset POWERLEVEL9K_DIR_OMIT_FIRST_CHARACTER
+  unset POWERLEVEL9K_SHORTEN_DIR_LENGTH
+  unset POWERLEVEL9K_SHORTEN_STRATEGY
+}
+
+function testTruncateToUniqueWorks() {
+  POWERLEVEL9K_DIR_OMIT_FIRST_CHARACTER=true
+  POWERLEVEL9K_DIR_PATH_SEPARATOR='xXx'
+  POWERLEVEL9K_SHORTEN_DIR_LENGTH=2
+  POWERLEVEL9K_SHORTEN_STRATEGY='truncate_to_unique'
+  mkdir -p /tmp/powerlevel9k-test/adam/devl
+  mkdir -p /tmp/powerlevel9k-test/alice/devl
+  mkdir -p /tmp/powerlevel9k-test/alice/docs
+  mkdir -p /tmp/powerlevel9k-test/bob/docs
+  cd /tmp/powerlevel9k-test/alice/devl
+
+  assertEquals "%K{blue} %F{black}txXxpxXxalxXxde %k%F{blue}%f " "$(build_left_prompt)"
 
   cd -
   rm -fr /tmp/powerlevel9k-test
