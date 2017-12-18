@@ -123,6 +123,12 @@ let g:syntastic_python_checkers = ['pylint']
 let g:syntastic_error_symbol = '✘'
 let g:syntastic_warning_symbol = '⚠'
 
+"-Ansible-vim-
+"-Ansible-vim"
+let g:ansible_name_highlight = 'b'
+let g:ansible_extra_keywords_highlight = 1
+let g:ansible_extra_syntaxes = "sh.vim php.vim python.vim"
+
 "-Python-Mode-
 autocmd FileType python setlocal nonumber
 autocmd FileType python map <buffer> <F5> :PymodeLint<CR>
