@@ -287,7 +287,7 @@ prompt_anaconda() {
 
 # AWS Profile
 prompt_aws() {
-  local aws_profile="$AWS_DEFAULT_PROFILE"
+  local aws_profile="${AWS_PROFILE:-$AWS_DEFAULT_PROFILE}"
 
   if [[ -n "$aws_profile" ]]; then
     "$1_prompt_segment" "$0" "$2" red white "$aws_profile" 'AWS_ICON'
@@ -695,7 +695,10 @@ set_default POWERLEVEL9K_DIR_PATH_SEPARATOR "/"
 set_default POWERLEVEL9K_HOME_FOLDER_ABBREVIATION "~"
 set_default POWERLEVEL9K_DIR_SHOW_WRITABLE false
 prompt_dir() {
-  local current_path="$(print -P "%~")"
+  local tmp="$IFS"
+  local IFS=""
+  local current_path=$(pwd | sed -e "s,^$HOME,~,")
+  local IFS="$tmp"
   if [[ -n "$POWERLEVEL9K_SHORTEN_DIR_LENGTH" || "$POWERLEVEL9K_SHORTEN_STRATEGY" == "truncate_with_folder_marker" ]]; then
     set_default POWERLEVEL9K_SHORTEN_DELIMITER $'\U2026'
 
@@ -1332,7 +1335,7 @@ powerlevel9k_vcs_init() {
 prompt_vcs() {
   VCS_WORKDIR_DIRTY=false
   VCS_WORKDIR_HALF_DIRTY=false
-  current_state=""
+  local current_state=""
 
   # Actually invoke vcs_info manually to gather all information.
   vcs_info
@@ -1379,18 +1382,10 @@ prompt_virtualenv() {
 }
 
 # pyenv: current active python version (with restrictions)
-# More information on pyenv (Python version manager like rbenv and rvm):
-# https://github.com/yyuu/pyenv
-# the prompt parses output of pyenv version and only displays the first word
+# https://github.com/pyenv/pyenv#choosing-the-python-version
 prompt_pyenv() {
-  local pyenv_version="$(pyenv version 2>/dev/null)"
-  pyenv_version="${pyenv_version%% *}"
-  # XXX: The following should return the same as above.
-  # This reads better for devs familiar with sed/awk/grep/cut utilities
-  # Using shell expansion/substitution may hamper future maintainability
-  #local pyenv_version="$(pyenv version 2>/dev/null | head -n1 | cut -d' ' -f1)"
-  if [[ -n "$pyenv_version" && "$pyenv_version" != "system" ]]; then
-    "$1_prompt_segment" "$0" "$2" "blue" "$DEFAULT_COLOR" "$pyenv_version" 'PYTHON_ICON'
+  if [[ -n "$PYENV_VERSION" ]]; then
+    "$1_prompt_segment" "$0" "$2" "blue" "$DEFAULT_COLOR" "$PYENV_VERSION" 'PYTHON_ICON'
   fi
 }
 
@@ -1423,7 +1418,18 @@ prompt_kubecontext() {
     if [[ -z "$k8s_namespace" ]]; then
       k8s_namespace="default"
     fi
-    "$1_prompt_segment" "$0" "$2" "magenta" "white" "$k8s_context/$k8s_namespace" "KUBERNETES_ICON"
+  
+    local k8s_final_text=""
+
+    if [[ "$k8s_context" == "k8s_namespace" ]]; then
+      # No reason to print out the same identificator twice
+      k8s_final_text="$k8s_context"
+    else
+      k8s_final_text="$k8s_context/$k8s_namespace"
+    fi
+  
+    
+    "$1_prompt_segment" "$0" "$2" "magenta" "white" "$k8s_final_text" "KUBERNETES_ICON"
   fi
 }
 
@@ -1434,6 +1440,7 @@ prompt_kubecontext() {
 # Main prompt
 build_left_prompt() {
   local index=1
+  local element
   for element in "${POWERLEVEL9K_LEFT_PROMPT_ELEMENTS[@]}"; do
     # Remove joined information in direct calls
     element=${element%_joined}
