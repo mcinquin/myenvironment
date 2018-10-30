@@ -120,14 +120,18 @@ let g:syntastic_enable_sh_checker = 1
 let g:syntastic_sh_checkers = ['sh']
 let g:syntastic_enable_python_checker = 1
 let g:syntastic_python_checkers = ['pylint']
+let g:syntastic_enable_yaml_checker = 1
+let g:syntastic_yaml_checkers = ['yamllint']
 let g:syntastic_error_symbol = '✘'
 let g:syntastic_warning_symbol = '⚠'
 
-"-Ansible-vim-
 "-Ansible-vim"
 let g:ansible_name_highlight = 'b'
 let g:ansible_extra_keywords_highlight = 1
 let g:ansible_extra_syntaxes = "sh.vim php.vim python.vim"
+
+"-Vim yaml"
+au BufNewFile,BufRead *.yaml,*.yml set filetype=yaml.ansible
 
 "-Python-Mode-
 autocmd FileType python setlocal nonumber
