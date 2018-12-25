@@ -150,5 +150,8 @@ let g:pymode_lint_info_symbol = '✆'
 let g:pymode_lint_pyflakes_symbol = 'Π'
 let g:pymode_rope_complete_on_dot = 0
 
+"-vim-search-pulse-
+let g:vim_search_pulse_mode = 'cursor_line'
+
 "prevent vim to add garbage characters in eof
 :set t_RV=
