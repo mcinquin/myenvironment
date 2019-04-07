@@ -1,12 +1,15 @@
 set nocompatible
 set nofoldenable
+set mouse-=a
 
-"-Encoding-
+
+"-ENCODING-
 set encoding=utf-8
 set termencoding=utf-8
 setglobal fileencoding=utf-8
 
-"-Text Format-
+
+"-TEXT FORMAT-
 "--indentation--
 set ruler
 set preserveindent
@@ -43,36 +46,20 @@ set showmode                    " Display the current mode
 set laststatus=2
 "set colorcolumn=80
 
-"-Pathogen-
-execute pathogen#infect()
-call pathogen#helptags()
-syntax on
-filetype plugin indent on
-
-"-Solarized-
-set t_Co=256
-set background=dark
-if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"))
-    let g:solarized_termcolors=256
-    let g:solarized_termtrans=0
-    let g:solarized_contrast="normal"
-    let g:solarized_visibility="normal"
-    color solarized
-endif
-
 hi Comment term=bold cterm=NONE ctermfg=DarkGray ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
 hi Normal term=bold cterm=NONE ctermfg=Gray ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
 
-"-Add changelog in spec file-
-autocmd BufRead *.spec noremap <F7> /%changelog<cr>:r!LC_ALL=C date +"\%a \%b \%d \%Y"<CR>I* <esc>A Shini31<CR>Release <esc>/Version:<cr>$T v$hy/Release <cr>$pa-<esc>/Release:<cr>$T v$hy/Release <cr>$po-<cr>
+"-FUNCTIONS-
+"--Add changelog in spec file--
+autocmd BufRead *.spec noremap <F7> /%changelog<cr>:r!LC_ALL=C date +"\%a \%b \%d \%Y"<CR>I* <esc>A Mathieu Cinquin <mcinquin@merethis.net><CR>Release <esc>/Version:<cr>$T v$hy/Release <cr>$pa-<esc>/Release:<cr>$T v$hy/Release <cr>$po-<cr>
 
-"-Save cursor position-
+"--Save cursor position--
 if has("autocmd")
-      au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-          \| exe "normal g'\"" | endif
+  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+    \| exe "normal g'\"" | endif
 endif
 
-"-Trailing Whitespaces-
+"--Trailing Whitespaces--
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
@@ -80,78 +67,97 @@ autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd BufWinLeave * call clearmatches()
 function! StripTrailingWhiteSpaces()
-    "Store the current position
-    let _s=@/
-    let l = line(".")
-    let c = col(".")
-    " Strip white spaces
-    %s/\s\+$//e
-    " Restore previous search history and cursor position
-    let @/=_s
-    call cursor(l, c)
+  "Store the current position
+  let _s=@/
+  let l = line(".")
+  let c = col(".")
+  " Strip white spaces
+  %s/\s\+$//e
+  " Restore previous search history and cursor position
+  let @/=_s
+  call cursor(l, c)
 endfunction"
 map <F2> :call StripTrailingWhiteSpaces()<CR>
 
-"-Powerline-
-let g:airline_powerline_fonts=1
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
+function! BuildYCM(info)
+  " info is a dictionary with 3 fields
+  " - name:   name of the plugin
+  " - status: 'installed', 'updated', or 'unchanged'
+  " - force:  set on PlugInstall! or PlugUpdate!
+  if a:info.status == 'installed' || a:info.force
+    !./install.py
+  endif
+endfunction
+
+"-VIM-PLUG-
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-"vim-airline {
-    let g:airline_theme = 'solarized'
-    if !exists('g:airline_powerline_fonts')
-       " Use the default set of separators with a few customizations
-        let g:airline_left_sep='›'  " Slightly fancier than '>'
-        let g:airline_right_sep='‹' " Slightly fancier than '<'
-    endif
-"}
+call plug#begin('~/.vim/plugged')
+  Plug 'altercation/vim-colors-solarized'
+  Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
+  Plug 'w0rp/ale'
+  Plug 'scrooloose/nerdtree'
+  Plug 'Raimondi/delimitMate'
+  Plug 'andymass/vim-matchup'
+  Plug 'qwertologe/nextval.vim'
+  Plug 'sheerun/vim-polyglot'
+  Plug 'cespare/vim-toml'
+  Plug 'hashivim/vim-terraform'
+  Plug 'jvirtanen/vim-hcl'
+  Plug 'moby/moby' , {'rtp': '/contrib/syntax/vim/'}  
+  Plug 'pearofducks/ansible-vim'
+call plug#end()
 
-"-NERDTreeToggle-
+"-PLUGINS-
+"--Solarized--
+set t_Co=256
+set background=dark
+if filereadable(expand("~/.vim/plugged/vim-colors-solarized/colors/solarized.vim"))
+  let g:solarized_termcolors=256
+  let g:solarized_termtrans=0
+  let g:solarized_contrast="normal"
+  let g:solarized_visibility="normal"
+  color solarized
+endif
+
+"--Vim-airline--
+  "---Powerline---
+  let g:airline_powerline_fonts=1
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
+  
+  let g:airline_theme = 'solarized'
+  if !exists('g:airline_powerline_fonts')
+    " Use the default set of separators with a few customizations
+    let g:airline_left_sep='›'  " Slightly fancier than '>'
+    let g:airline_right_sep='‹' " Slightly fancier than '<'
+  endif
+
+"--ale--
+let g:airline#extensions#ale#enabled = 1
+let g:ale_sign_error = '⚠'
+let g:ale_sign_warning = '✘'
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 1
+
+"--NERDTree--
 map <C-n> :NERDTreeToggle<CR>
 
-"-SnipMate-
-let g:snippets_dir = "~/.vim/bundle/vim-snippets/snippets/"
+"--Vim-matchup--
+:hi MatchParen ctermfg=red cterm=underline
+:hi MatchWord ctermfg=red cterm=underline
+:hi MatchParenCur ctermfg=red cterm=underline
+:hi MatchWordCur ctermfg=red cterm=underline
 
-"-Syntastic-
-let g:syntastic_enable_perl_checker = 1
-let g:syntastic_perl_checkers = ['perl']
-let g:syntastic_enable_sh_checker = 1
-let g:syntastic_sh_checkers = ['sh']
-let g:syntastic_enable_python_checker = 1
-let g:syntastic_python_checkers = ['pylint']
-let g:syntastic_enable_yaml_checker = 1
-let g:syntastic_yaml_checkers = ['yamllint']
-let g:syntastic_error_symbol = '✘'
-let g:syntastic_warning_symbol = '⚠'
-
-"-Ansible-vim"
-let g:ansible_name_highlight = 'b'
-let g:ansible_extra_keywords_highlight = 1
-let g:ansible_extra_syntaxes = "sh.vim php.vim python.vim"
-
-"-Vim yaml"
-au BufNewFile,BufRead *.yaml,*.yml set filetype=yaml.ansible
-
-"-Python-Mode-
-autocmd FileType python setlocal nonumber
-autocmd FileType python map <buffer> <F5> :PymodeLint<CR>
-autocmd FileType python map <buffer> <F6> :PymodeLintAuto<CR>
-let g:pymode_lint_on_fly = 1
-let g:pymode_lint_on_write = 1
-let g:pymode_lint_checkers = ['pyflakes', 'pep8']
-let g:pymode_lint_ignore = "E15,E501,W0401,E128"
-let g:pymode_lint_error_symbol = '✘'
-let g:pymode_lint_todo_symbol = '⚠'
-let g:pymode_lint_docs_symbol = '✍'
-let g:pymode_lint_comment_symbol = '♯'
-let g:pymode_lint_visual_symbol ='ⓥ'
-let g:pymode_lint_info_symbol = '✆'
-let g:pymode_lint_pyflakes_symbol = 'Π'
-let g:pymode_rope_complete_on_dot = 0
-
-"-vim-search-pulse-
-let g:vim_search_pulse_mode = 'cursor_line'
+"--Vim-nextval--
+nmap <silent> <unique> <C-Up> <Plug>nextvalInc
+nmap <silent> <unique> <C-Down> <Plug>nextvalDec
 
 "prevent vim to add garbage characters in eof
 :set t_RV=
