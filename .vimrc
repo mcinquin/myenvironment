@@ -1,6 +1,9 @@
 set nocompatible
 set nofoldenable
 set mouse-=a
+syntax on						" Enable syntax highlighting
+filetype off					" Reset filetype detection first ...
+filetype plugin indent on	    " ... and enable filetype detection
 
 
 "-ENCODING-
@@ -13,15 +16,13 @@ setglobal fileencoding=utf-8
 "--indentation--
 set ruler
 set preserveindent
-set softtabstop=4               "fix backspace for tabs
-set tabstop=4                   "4-space tabs"
-set expandtab                   "tabs->spaces
+set noexpandtab ci pi sts=2 ts=2 sw=2	" noexpandtab, copyindent, preserveindent, softtabstop=2, shiftwidth=2, tabstop=2
+set wrap linebreak nolist				" Word wrap without line breaks
 set nowrap                      " don't wrap lines
 set backspace=indent,eol,start  " allow backspacing over everything in insert mode
 set autoindent                  " always set autoindenting on
 set copyindent                  " copy the previous indentation on autoindenting
 "set number                      " always show line numbers
-set shiftwidth=4                " number of spaces to use for autoindenting
 set shiftround                  " use multiple of shiftwidth when indenting with '<' and '>'
 set spell
 set hidden
@@ -34,7 +35,7 @@ set ignorecase                  " ignore case when searching
 set smartcase                   " ignore case if search pattern is all lowercase, case-sensitive otherwise
 set incsearch                   " show search matches as you type
 set magic                       " magic regexp
-set wildignore=*.swp,*.o,*.obj,*.bak,*.exe,*.so,*.dll,*.pyc,.sv,.hg,.bzr,.git
+set wildignore=*.swp,*.o,*.obj,*.bak,*.exe,*.so,*.dll,*.pyc,.sv,.hg,.bzr,.git,.svn,__pycache__,
 
 "--visual--
 set history=1000                " remember more commands and search history
@@ -79,6 +80,15 @@ function! StripTrailingWhiteSpaces()
 endfunction"
 map <F2> :call StripTrailingWhiteSpaces()<CR>
 
+"--Kubernetes--
+augroup kubernetes
+	au!
+	au BufRead,BufNewFile */.kube/config set filetype=yaml
+	au BufRead,BufNewFile */templates/*.yaml,*/deployment/*.yaml,*/templates/*.tpl,*/deployment/*.tpl set filetype=yaml.gotexttmpl
+	au FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+	au FileType yaml nmap <F12> :call VimuxRunCommand("clear; kubeval ". bufname("%"))<CR>
+augroup END
+
 function! BuildYCM(info)
   " info is a dictionary with 3 fields
   " - name:   name of the plugin
@@ -105,12 +115,13 @@ call plug#begin('~/.vim/plugged')
   Plug 'Raimondi/delimitMate'
   Plug 'andymass/vim-matchup'
   Plug 'qwertologe/nextval.vim'
-  Plug 'sheerun/vim-polyglot'
-  Plug 'cespare/vim-toml'
+  "Plug 'sheerun/vim-polyglot'
   Plug 'hashivim/vim-terraform'
   Plug 'jvirtanen/vim-hcl'
-  Plug 'moby/moby' , {'rtp': '/contrib/syntax/vim/'}  
-  Plug 'pearofducks/ansible-vim'
+  Plug 'ekalinin/dockerfile.vim'
+  Plug 'pearofducks/ansible-vim', { 'do': 'cd ./UltiSnips; ./generate.py' }
+  "Plug 'moby/moby' , {'rtp': '/contrib/syntax/vim/'}
+  Plug 'plasticboy/vim-markdown'
 call plug#end()
 
 "-PLUGINS-
@@ -131,7 +142,7 @@ endif
   if !exists('g:airline_symbols')
     let g:airline_symbols = {}
   endif
-  
+
   let g:airline_theme = 'solarized'
   if !exists('g:airline_powerline_fonts')
     " Use the default set of separators with a few customizations
@@ -145,6 +156,12 @@ let g:ale_sign_error = '⚠'
 let g:ale_sign_warning = '✘'
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 1
+let g:ale_ansible_ansible_lint_executable = 'ansible-lint -x ANSIBLE0204'
+
+"--Ansible-vim--
+let g:ansible_unindent_after_newline = 1
+let g:ansible_attribute_highlight = 'ob'
+let g:ansible_template_syntaxes = { '*.rb.j2': 'ruby' }
 
 "--NERDTree--
 map <C-n> :NERDTreeToggle<CR>
@@ -158,6 +175,13 @@ map <C-n> :NERDTreeToggle<CR>
 "--Vim-nextval--
 nmap <silent> <unique> <C-Up> <Plug>nextvalInc
 nmap <silent> <unique> <C-Down> <Plug>nextvalDec
+
+"--Delitmate--
+let g:delimitMate_expand_cr = 1
+let g:delimitMate_expand_space = 1
+let g:delimitMate_smart_quotes = 1
+let g:delimitMate_expand_inside_quotes = 0
+let g:delimitMate_smart_matchpairs = '^\%(\w\|\$\)'
 
 "prevent vim to add garbage characters in eof
 :set t_RV=

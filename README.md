@@ -11,6 +11,7 @@ My zsh, terminator and vim configurations files
 * zsh
 * terminator
 * yamllint
+* ansible-lint
 * vim-nox
 
 # Installation
