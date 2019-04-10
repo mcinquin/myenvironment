@@ -89,3 +89,5 @@ source ~/z.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias svi="sudo vi"
 alias service="sudo service"
+alias ipa="ip --brief --color a"
+alias ssa="ss -plantue"
