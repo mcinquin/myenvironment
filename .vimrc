@@ -116,6 +116,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'Raimondi/delimitMate'
   Plug 'andymass/vim-matchup'
   Plug 'qwertologe/nextval.vim'
+  Plug 'skywind3000/asyncrun.vim'
 
 " Status bar
   Plug 'vim-airline/vim-airline'
@@ -186,6 +187,11 @@ let g:ansible_template_syntaxes = { '*.rb.j2': 'ruby' }
 " Plugin: scrooloose/nerdtree
 "----------------------------------------------
 map <C-n> :NERDTreeToggle<CR>
+
+"----------------------------------------------
+" Plugin: skywind3000/asyncrun.vim
+"----------------------------------------------
+:let g:asyncrun_open = 8
 
 "----------------------------------------------
 " Plugin: andymass/vim-matchup
