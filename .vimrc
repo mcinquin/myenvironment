@@ -17,7 +17,7 @@ filetype off          " Reset filetype detection first ...
 filetype plugin indent on     " ... and enable filetype detection
 set ruler
 "set preserveindent
-set noexpandtab ci pi sts=2 ts=2 sw=2	" noexpandtab, copyindent, preserveindent, softtabstop=2, shiftwidth=2, tabstop=2
+set ci pi sts=2 ts=2 sw=2 expandtab     "copyindent, preserveindent, softtabstop=2, shiftwidth=2, tabstop=2 expandtab"
 set wrap linebreak nolist				" Word wrap without line breaks
 set nowrap                      " don't wrap lines
 set backspace=indent,eol,start  " allow backspacing over everything in insert mode
