@@ -73,6 +73,9 @@ plugins=(zsh-256color ssh-agent git git-remote-branch git-auto-fetch svn vagrant
 
 source $ZSH/oh-my-zsh.sh
 
+# Automatically update PATH entries
+zstyle ':completion:*' rehash true
+
 # User configuration
 eval $(dircolors)
 
