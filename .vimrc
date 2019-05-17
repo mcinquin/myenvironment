@@ -98,7 +98,8 @@ augroup kubernetes
 	au BufRead,BufNewFile */.kube/config set filetype=yaml
 	au BufRead,BufNewFile */templates/*.yaml,*/deployment/*.yaml,*/templates/*.tpl,*/deployment/*.tpl set filetype=yaml.gotexttmpl
 	au FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
-	au FileType yaml nmap <F12> :call VimuxRunCommand("clear; kubeval ". bufname("%"))<CR>
+  au FileType yaml nmap <F5> :AsyncRun! kubeval '%:p'<CR>
+  au FileType yaml nmap <F6> :cclose <CR>
 augroup END
 
 "----------------------------------------------
