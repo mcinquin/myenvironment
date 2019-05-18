@@ -69,7 +69,7 @@ autocmd BufRead *.spec noremap <F7> /%changelog<cr>:r!LC_ALL=C date +"\%a \%b \%
 "--Save cursor position--
 if has("autocmd")
   au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-    \| exe "normal g'\"" | endif
+  \| exe "normal g'\"" | endif
 endif
 
 "-Trailing Whitespaces-
@@ -94,10 +94,10 @@ map <F2> :call StripTrailingWhiteSpaces()<CR>
 
 "-Kubernetes-
 augroup kubernetes
-	au!
-	au BufRead,BufNewFile */.kube/config set filetype=yaml
-	au BufRead,BufNewFile */templates/*.yaml,*/deployment/*.yaml,*/templates/*.tpl,*/deployment/*.tpl set filetype=yaml.gotexttmpl
-	au FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+  au!
+  au BufRead,BufNewFile */.kube/config set filetype=yaml
+  au BufRead,BufNewFile */templates/*.yaml,*/deployment/*.yaml,*/templates/*.tpl,*/deployment/*.tpl set filetype=yaml.gotexttmpl
+  au FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
   au FileType yaml nmap <F5> :AsyncRun! kubeval '%:p'<CR>
   au FileType yaml nmap <F6> :cclose <CR>
 augroup END
