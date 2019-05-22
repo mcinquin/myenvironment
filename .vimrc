@@ -53,14 +53,6 @@ set noerrorbells                  " No bells!
 set novisualbell                  " I said, no bells!
 
 "----------------------------------------------
-" Highlight
-"----------------------------------------------
-
-hi Comment term=bold cterm=NONE ctermfg=DarkGray ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
-hi Normal term=bold cterm=NONE ctermfg=Gray ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
-
-
-"----------------------------------------------
 " Functions
 "----------------------------------------------
 "-Add changelog in spec file-
@@ -150,6 +142,9 @@ if filereadable(expand("~/.vim/plugged/vim-colors-solarized/colors/solarized.vim
   let g:solarized_visibility="normal"
   color solarized
 endif
+
+hi Comment term=bold cterm=NONE ctermfg=242 ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
+hi Normal term=bold cterm=NONE ctermfg=245 ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
 
 "----------------------------------------------
 " Plugin: vim-airline/vim-airline
