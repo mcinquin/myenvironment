@@ -58,11 +58,10 @@ set novisualbell                  " I said, no bells!
 "-Add changelog in spec file-
 autocmd BufRead *.spec noremap <F7> /%changelog<cr>:r!LC_ALL=C date +"\%a \%b \%d \%Y"<CR>I* <esc>A Mathieu Cinquin <mcinquin@merethis.net><CR>Release <esc>/Version:<cr>$T v$hy/Release <cr>$pa-<esc>/Release:<cr>$T v$hy/Release <cr>$po-<cr>
 
-"--Save cursor position--
-if has("autocmd")
-  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-  \| exe "normal g'\"" | endif
-endif
+"make vim save and load the folding of the document each time it loads"
+"also places the cursor in the last place that it was left."
+au BufWinLeave * mkview
+au BufWinEnter * silent loadview
 
 "-Trailing Whitespaces-
 highlight ExtraWhitespace ctermbg=red guibg=red
