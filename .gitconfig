@@ -12,7 +12,7 @@
     info = remote -v
 [core]
     editor = vim
-	excludesfile = ~/.gitignore
+    excludesfile = ~/.gitignore
     repositoryformatversion = 0
     filemode = true
     bare = false
@@ -25,3 +25,9 @@
     default = simple
 [pull]
     rebase = preserve
+[user]
+    name = "Shini31"
+    email = github@capitoul.net
+[branch]
+    autosetupmerge = always
+
