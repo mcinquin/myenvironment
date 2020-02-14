@@ -85,7 +85,7 @@ map <F2> :call StripTrailingWhiteSpaces()<CR>
 augroup kubernetes
   au!
   au BufRead,BufNewFile */.kube/config set filetype=yaml
-  au BufRead,BufNewFile */templates/*.yaml,*/deployment/*.yaml,*/templates/*.tpl,*/deployment/*.tpl set filetype=yaml.gotexttmpl
+  au BufRead,BufNewFile */templates/*.{yaml,yml},*/deployment/*.{yaml,yml},*/templates/*.tpl,*/deployment/*.tpl set filetype=yaml.gotexttmpl
   au FileType yaml setlocal ts=2 sts=2 sw=2 expandtab indentkeys-=0# indentkeys-=<:>
   au FileType yaml nmap <F5> :AsyncRun! kubeval '%:p'<CR>
   au FileType yaml nmap <F6> :cclose <CR>
@@ -176,7 +176,15 @@ let g:ale_yaml_yamllint_options = 'indentation: {spaces: 2, indent-sequences: co
 let g:ansible_unindent_after_newline = 1
 let g:ansible_attribute_highlight = 'ob'
 let g:ansible_template_syntaxes = { '*.rb.j2': 'ruby' }
-autocmd FileType yaml setlocal indentkeys-=0# indentkeys-=<:>
+augroup ansible_vim_file
+  autocmd!
+  autocmd BufNewFile,BufRead */playbooks/*.{yml,yaml} setfiletype yaml.ansible
+  autocmd BufNewFile,BufRead */roles/*.{yml,yaml} setfiletype yaml.ansible
+  autocmd BufNewFile,BufRead */tasks/*.{yml,yaml} setfiletype yaml.ansible
+  autocmd BufNewFile,BufRead */handlers/*.{yml,yaml} setfiletype yaml.ansible
+  autocmd BufNewFile,BufRead */vars/*.{yml,yaml} setfiletype yaml.ansible
+  autocmd BufNewFile,BufRead */defaults/*.{yml,yaml} setfiletype yaml.ansible
+augroup END
 
 "----------------------------------------------
 " Plugin: scrooloose/nerdtree
