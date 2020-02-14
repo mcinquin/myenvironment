@@ -62,12 +62,12 @@ au BufWinLeave * mkview
 au BufWinEnter * silent loadview
 
 "-Trailing Whitespaces-
-highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+$/
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd BufWinLeave * call clearmatches()
+"highlight ExtraWhitespace ctermbg=red guibg=red
+"match ExtraWhitespace /\s\+$/
+"autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+"autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+"autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+"autocmd BufWinLeave * call clearmatches()
 function! StripTrailingWhiteSpaces()
   "Store the current position
   let _s=@/
@@ -85,7 +85,7 @@ map <F2> :call StripTrailingWhiteSpaces()<CR>
 augroup kubernetes
   au!
   au BufRead,BufNewFile */.kube/config set filetype=yaml
-  au BufRead,BufNewFile */templates/*.{yaml,yml},*/deployment/*.{yaml,yml},*/templates/*.tpl,*/deployment/*.tpl set filetype=yaml.gotexttmpl
+  au BufRead,BufNewFile */templates/*.yaml,*/deployment/*.yaml,*/templates/*.tpl,*/deployment/*.tpl set filetype=yaml.gotexttmpl
   au FileType yaml setlocal ts=2 sts=2 sw=2 expandtab indentkeys-=0# indentkeys-=<:>
   au FileType yaml nmap <F5> :AsyncRun! kubeval '%:p'<CR>
   au FileType yaml nmap <F6> :cclose <CR>
@@ -114,7 +114,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'vim-airline/vim-airline-themes'
 
 " Syntax/Lint
-  Plug 'w0rp/ale'
+  Plug 'dense-analysis/ale'
+  Plug 'ntpeters/vim-better-whitespace'
 
 " Colorschemes
   Plug 'altercation/vim-colors-solarized'
@@ -160,31 +161,34 @@ if !exists('g:airline_powerline_fonts')
 endif
 
 "----------------------------------------------
-" Plugin: w0rp/ale
+" Plugin: dense-analysis/ale
 "----------------------------------------------
-let g:airline#extensions#ale#enabled = 1
+let g:airline#extensions#ale#enabled = 0
+let g:ale_linters_explicit = 1
+let g:ale_fixers = {'python': ['black', 'isort']}
+let g:ale_linters = {'python': ['flake8'], 'ansible': ['ansible-lint'], 'dockerfile': ['hadolint'], 'terraform': ['terraform'], 'json': ['jsonlint']}
 let g:ale_sign_error = '⚠'
 let g:ale_sign_warning = '✘'
-let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 1
-let g:ale_ansible_ansible_lint_executable = 'ansible-lint -x ANSIBLE0204'
-let g:ale_yaml_yamllint_options = 'indentation: {spaces: 2, indent-sequences: consistent}'
+"let g:ale_echo_msg_error_str = 'E'
+"let g:ale_echo_msg_warning_str = 'W'
+"let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+"let g:ale_lint_on_text_changed = 'never'
+"let g:ale_yaml_yamllint_options = 'indentation: {spaces: 2, indent-sequences: consistent}'
+
+"----------------------------------------------
+" Plugin: ntpeters/vim-better-whitespace
+"----------------------------------------------
+let g:better_whitespace_enabled=1
+let g:better_whitespace_ctermcolor='red'
 
 "----------------------------------------------
 " Plugin: pearofducks/ansible-vim
 "----------------------------------------------
 let g:ansible_unindent_after_newline = 1
 let g:ansible_attribute_highlight = 'ob'
+let g:ansible_extra_keywords_highlight = 1
 let g:ansible_template_syntaxes = { '*.rb.j2': 'ruby' }
-augroup ansible_vim_file
-  autocmd!
-  autocmd BufNewFile,BufRead */playbooks/*.{yml,yaml} setfiletype yaml.ansible
-  autocmd BufNewFile,BufRead */roles/*.{yml,yaml} setfiletype yaml.ansible
-  autocmd BufNewFile,BufRead */tasks/*.{yml,yaml} setfiletype yaml.ansible
-  autocmd BufNewFile,BufRead */handlers/*.{yml,yaml} setfiletype yaml.ansible
-  autocmd BufNewFile,BufRead */vars/*.{yml,yaml} setfiletype yaml.ansible
-  autocmd BufNewFile,BufRead */defaults/*.{yml,yaml} setfiletype yaml.ansible
-augroup END
 
 "----------------------------------------------
 " Plugin: scrooloose/nerdtree
