@@ -10,9 +10,9 @@ DISABLE_UPDATE_PROMPT=true
 DISABLE_AUTO_UPDATE=true
 
 # ZSH THEMES
-POWERLEVEL9K_INSTALLATION_PATH="$ZSH/custom/themes/powerlevel9k"
+POWERLEVEL9K_INSTALLATION_PATH="$ZSH/custom/themes/powerlevel10k"
 POWERLEVEL9K_MODE="awesome-fontconfig"
-ZSH_THEME="powerlevel9k/powerlevel9k"
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 POWERLEVEL9K_STATUS_VERBOSE=true
 POWERLEVEL9K_STATUS_OK_IN_NON_VERBOSE=true
@@ -31,7 +31,7 @@ POWERLEVEL9K_STATUS_OK_BACKGROUND="black"
 POWERLEVEL9K_STATUS_OK_FOREGROUND="green"
 POWERLEVEL9K_STATUS_ERROR_BACKGROUND="black"
 POWERLEVEL9K_STATUS_ERROR_FOREGROUND="red"
-POWERLEVEL9K_VPN_IP_INTERFACE="tun"
+#POWERLEVEL9K_VPN_IP_INTERFACE="tun"
 POWERLEVEL9K_VPN_IP_BACKGROUND="red"
 POWERLEVEL9K_VPN_IP_FOREGROUND="white"
 POWERLEVEL9K_IP_BACKGROUND="252"
@@ -39,6 +39,7 @@ POWERLEVEL9K_IP_FOREGROUND="black"
 POWERLEVEL9K_KUBECONTEXT_BACKGROUND="027"
 POWERLEVEL9K_KUBECONTEXT_FOREGROUND="white"
 POWERLEVEL9K_KUBERNETES_ICON="\U2638"
+POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|kubens|kubectx'
 POWERLEVEL9K_TIME_BACKGROUND="cyan"
 POWERLEVEL9K_TIME_FOREGROUND="black"
 POWERLEVEL9K_CONTEXT_DEFAULT_BACKGROUND="black"
@@ -53,6 +54,8 @@ POWERLEVEL9K_CONTEXT_ROOT_BACKGROUND="black"
 POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND="red"
 POWERLEVEL9K_BACKGROUND_JOBS_BACKGROUND="black"
 POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND="red"
+POWERLEVEL9K_BACKGROUND_TIME="white"
+POWERLEVEL9K_BACKGROUND_TIME="block"
 
 # Uncomment the following line to enable command auto-correction.
 ENABLE_CORRECTION="true"
@@ -69,7 +72,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(zsh-256color ssh-agent git git-remote-branch git-auto-fetch svn vagrant docker docker-compose systemd apt vault kubectl zsh-completions)
+plugins=(zsh-256color git git-remote-branch git-auto-fetch svn vagrant docker docker-compose systemd apt vault kubectl zsh-completions)
 
 source $ZSH/oh-my-zsh.sh
 
