@@ -97,3 +97,8 @@ alias svi="sudo vi"
 alias service="sudo service"
 alias ipa="ip --brief --color a"
 alias ssa="ss -plantue"
+
+# bat
+export BAT_THEME="Solarized (light)"
+alias cat="bat"
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
