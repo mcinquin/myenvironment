@@ -46,9 +46,10 @@ set titleold=                   " Don't set the title to 'Thanks for flying Vim'
 set showmode                    " Display the current mode
 set laststatus=2
 "set colorcolumn=80
-set noswapfile                    " disable swapfile usage
-set noerrorbells                  " No bells!
-set novisualbell                  " I said, no bells!
+set noswapfile                  " disable swapfile usage
+set noerrorbells                " No bells!
+set novisualbell                " I said, no bells!
+set signcolumn=auto             " Protect copy
 
 "----------------------------------------------
 " Functions
@@ -113,12 +114,16 @@ call plug#begin('~/.vim/plugged')
 " Colorschemes
   Plug 'altercation/vim-colors-solarized'
 
+" Git
+  Plug 'airblade/vim-gitgutter'
+
 " Language support
   Plug 'plasticboy/vim-markdown'
   Plug 'hashivim/vim-terraform'
   Plug 'jvirtanen/vim-hcl'
   Plug 'ekalinin/dockerfile.vim'
   Plug 'pearofducks/ansible-vim', { 'do': 'cd ./UltiSnips; ./generate.py' }
+  Plug 'stephpy/vim-yaml'
 call plug#end()
 
 
@@ -132,7 +137,7 @@ if filereadable(expand("~/.vim/plugged/vim-colors-solarized/colors/solarized.vim
   let g:solarized_termtrans=0
   let g:solarized_contrast="normal"
   let g:solarized_visibility="normal"
-  color solarized
+  colorscheme solarized
 endif
 
 hi Comment term=bold cterm=NONE ctermfg=242 ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
@@ -163,6 +168,7 @@ let g:ale_linters = {'python': ['flake8'], 'ansible': ['ansible-lint'], 'dockerf
 let g:ale_sign_error = '⚠'
 let g:ale_sign_warning = '✘'
 let g:ale_lint_on_enter = 1
+let g:ale_sign_priority = 30
 "let g:ale_echo_msg_error_str = 'E'
 "let g:ale_echo_msg_warning_str = 'W'
 "let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
@@ -225,6 +231,20 @@ let g:vim_markdown_toml_frontmatter = 1
 let g:vim_markdown_frontmatter = 1
 let g:vim_markdown_new_list_item_indent = 2
 let g:vim_markdown_no_extensions_in_markdown = 1
+
+"----------------------------------------------
+" Plugin: airblade/vim-gitgutter
+"----------------------------------------------
+set updatetime=100
+let g:gitgutter_sign_priority=9
+highlight clear SignColumn
+call gitgutter#highlight#define_highlights()
+
+"----------------------------------------------
+" Plugin: stephpy/vim-yaml
+"----------------------------------------------
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+autocmd FileType yaml setl indentkeys-=<:>
 
 "prevent vim to add garbage characters in eof
 :set t_RV=
