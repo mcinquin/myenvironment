@@ -266,7 +266,7 @@ enable as many segments as you like. It won't slow down your prompt or Zsh start
 | `os_icon` | your OS logo (apple for macOS, swirl for debian, etc.) |
 | `dir` | current working directory |
 | `vcs` | Git repository status |
-| `prompt_char` | multi-functional prompt symbol; changes depending on vi mode: `❯`, `❮`, `Ⅴ`, `▶` for insert, command, visual and replace mode respectively; turns red on error |
+| `prompt_char` | multi-functional prompt symbol; changes depending on vi mode: `❯`, `❮`, `V`, `▶` for insert, command, visual and replace mode respectively; turns red on error |
 | `context` | user@hostname |
 | `status` | exit code of the last command |
 | `command_execution_time` | duration (wall time) of the last command |
@@ -366,14 +366,14 @@ make sure to disable the current theme in your plugin manager. See
 ### Oh My Zsh
 
 ```zsh
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 ```
 
 Users in mainland China can use the official mirror on gitee.com for faster download.<br>
 中国大陆用户可以使用 gitee.com 上的官方镜像加速下载.
 
 ```zsh
-git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
+git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 ```
 
 Set `ZSH_THEME="powerlevel10k/powerlevel10k"` in `~/.zshrc`.
@@ -427,7 +427,7 @@ echo 'source /usr/local/opt/powerlevel10k/powerlevel10k.zsh-theme' >>! ~/.zshrc
 ### Arch Linux
 
 ```zsh
-pacman -S --noconfirm zsh-theme-powerlevel10k
+yay -Sy --noconfirm zsh-theme-powerlevel10k-git
 echo 'source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme' >>! ~/.zshrc
 ```
 
@@ -550,6 +550,12 @@ applications on your system. Configure your terminal to use this font:
 - **Blink** Type `config`, go to *Appearance*, tap *Add a new font*, tap *Open Gallery*, select
   *MesloLGS NF.css*, tap *import* and type `exit` in the home view to reload the font.
 - **Terminus**: Open *Settings → Appearance* and set *Font* to `MesloLGS NF`.
+- **Terminator**: Open *Preferences* using the context menu. Under *Profiles* select the *General*
+  tab (should be selected already), uncheck *Use the system fixed width font* (if not already)
+  and select `MesloLGS NF Regular`. Exit the Preferences dialog by clicking *Close*.
+- **Guake**: Right Click on an open terminal and open *Preferences*. Under *Appearance* 
+  tab, uncheck *Use the system fixed width font* (if not already) and select `MesloLGS NF Regular`. 
+  Exit the Preferences dialog by clicking *Close*.  
 
 **IMPORTANT:** Run `p10k configure` after changing terminal font. The old `~/.p10k.zsh` may work
 incorrectly with the new font.
@@ -588,21 +594,70 @@ Powerlevel10k is released under the
 
 The command to update Powerlevel10k depends on how it was installed.
 
-| Installation            | Update command                                 |
-|-------------------------|------------------------------------------------|
-| [Manual](#manual)       | `git -C ~/powerlevel10k pull`                  |
-| [Oh My Zsh](#oh-my-zsh) | `git -C $ZSH_CUSTOM/themes/powerlevel10k pull` |
-| [Prezto](#prezto)       | `zprezto-update`                               |
-| [Zim](#zim)             | `zimfw update`                                 |
-| [Antigen](#antigen)     | `antigen update`                               |
-| [Zplug](#zplug)         | `zplug update`                                 |
-| [Zgen](#zgen)           | `zgen update`                                  |
-| [Zplugin](#zplugin)     | `zplugin update`                               |
-| [Zinit](#zinit)         | `zinit update`                                 |
-| [Homebrew](#homebrew)   | `brew update && brew upgrade`                  |
+| Installation              | Update command                                              |
+|---------------------------|-------------------------------------------------------------|
+| [Manual](#manual)         | `git -C ~/powerlevel10k pull`                               |
+| [Oh My Zsh](#oh-my-zsh)   | `git -C ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k pull` |
+| [Prezto](#prezto)         | `zprezto-update`                                            |
+| [Zim](#zim)               | `zimfw update`                                              |
+| [Antigen](#antigen)       | `antigen update`                                            |
+| [Zplug](#zplug)           | `zplug update`                                              |
+| [Zgen](#zgen)             | `zgen update`                                               |
+| [Zplugin](#zplugin)       | `zplugin update`                                            |
+| [Zinit](#zinit)           | `zinit update`                                              |
+| [Homebrew](#homebrew)     | `brew update && brew upgrade`                               |
+| [Arch Linux](#arch-linux) | `yay -Syu --noconfirm --needed zsh-theme-powerlevel10k-git` |
 
 **IMPORTANT**: Restart Zsh after updating Powerlevel10k. [Do not use `source ~/.zshrc`](
   #weird-things-happen-after-typing-source-zshrc).
+
+### How do I uninstall Powerlevel10k?
+
+1. Remove all references to "p10k" from `~/.zshrc`. You might have this snippet at the top:
+   ```zsh
+   if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+   fi
+   ```
+   And this at the bottom:
+   ```zsh
+   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+   ```
+   These are added by the [configuration wizard](#configuration-wizard). Remove them.
+2. Remove all references to "powerlevel10k" from `~/.zshrc`, `~/.zpreztorc` and `~/.zimrc` (some
+   of these files may be missing -- this is normal). These references have been added manually by
+   yourself when installing Powerlevel10k. Refer to the [installation instructions](#installation)
+   if you need a reminder.
+3. Verify that all references to "p10k" and "powerlevel10k" are gone from `~/.zshrc`, `~/.zpreztorc`
+   and `~/.zimrc`.
+   ```zsh
+   grep -E 'p10k|powerlevel10k' ~/.zshrc ~/.zpreztorc ~/.zimrc 2>/dev/null
+   ```
+   If this command produces output, there are still references to "p10k" or "powerlevel10k". You
+   need to remove them.
+4. Delete Powerlevel10k configuration file. This file is created by the
+   [configuration wizard](#configuration-wizard) and may contain manual edits by yourself.
+   ```zsh
+   rm -f ~/.p10k.zsh
+   ```
+5. Delete Powerlevel10k source files. These files have been downloaded when you've installed
+   Powerlevel10k. The command to delete them depends on which installation method you'd chosen.
+   Refer to the [installation instructions](#installation) if you need a reminder.
+
+   | Installation              | Uninstall command                                                |
+   |---------------------------|------------------------------------------------------------------|
+   | [Manual](#manual)         | `rm -rf ~/powerlevel10k`                                         |
+   | [Oh My Zsh](#oh-my-zsh)   | `rm -rf -- ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k` |
+   | [Prezto](#prezto)         | n/a                                                              |
+   | [Zim](#zim)               | `zimfw uninstall`                                                |
+   | [Antigen](#antigen)       | `antigen purge romkatv/powerlevel10k`                            |
+   | [Zplug](#zplug)           | `zplug clean`                                                    |
+   | [Zgen](#zgen)             | `zgen reset`                                                     |
+   | [Zplugin](#zplugin)       | `zplugin delete romkatv/powerlevel10k`                           |
+   | [Zinit](#zinit)           | `zinit delete romkatv/powerlevel10k`                             |
+   | [Homebrew](#homebrew)     | `brew uninstall powerlevel10k; brew untap romkatv/powerlevel10k` |
+   | [Arch Linux](#arch-linux) | `yay -R --noconfirm zsh-theme-powerlevel10k-git`                 |
+5. Restart Zsh. [Do not use `source ~/.zshrc`](#weird-things-happen-after-typing-source-zshrc).
 
 ### Where can I ask for help and report bugs?
 
@@ -1046,7 +1101,7 @@ Similarly, if you enable transient prompt, sparse prompt (with an empty line bef
 great choice.
 
 If you are using vi keymap, choose prompt with `prompt_char` in it (shown as green `❯` in the
-wizard). This symbol changes depending on vi mode: `❯`, `❮`, `Ⅴ`, `▶` for insert, command, visual
+wizard). This symbol changes depending on vi mode: `❯`, `❮`, `V`, `▶` for insert, command, visual
 and replace mode respectively. When a command fails, the symbol turns red. *Lean* style always has
 `prompt_char` in it. *Rainbow* and *Classic* styles have it only in the two-line configuration
 without left frame.
@@ -1081,14 +1136,6 @@ command is reflected in the *next* prompt.
 For details, see [this post on /r/zsh](
 https://www.reddit.com/r/zsh/comments/eg49ff/powerlevel10k_prompt_history_exit_code_colors/fc5huku).
 
-### Is there an AUR package for Powerlevel10k?
-
-There is [zsh-theme-powerlevel10k-git](
-  https://aur.archlinux.org/packages/zsh-theme-powerlevel10k-git/). It's owned by an unaffiliated
-volunteer.
-
-There is also an [official Powerlevel10k package](#arch-linux) for Pacman.
-
 ### What is the minimum supported Zsh version?
 
 Zsh 5.1 or newer should work. Fast startup requires Zsh >= 5.4.
@@ -1114,7 +1161,6 @@ from Nerd Fonts. The final font is released under the terms of
 [Apache License](
   https://raw.githubusercontent.com/romkatv/powerlevel10k-media/master/MesloLGS%20NF%20License.txt).
 
-
 MesloLGS NF font can be recreated with the following command (requires `git` and `docker`):
 
 ```zsh
@@ -1127,81 +1173,9 @@ If everything goes well, four `ttf` files will appear in `./out`.
 
 ### How to package Powerlevel10k for distribution?
 
-If you want to package Powerlevel10k, it's best to do it based off [releases](
-  https://github.com/romkatv/powerlevel10k/releases).
-
-The following code should work without patching anything in Powerlevel10k sources. If it doesn't,
-please open an issue.
-
-**IMPORTANT:** *Change version to what you want to package. This example doesn't get updated when
-new versions are released.*
-
-```zsh
-# Download and extract Powerlevel10k tarball.
-powerlevel10k_version=1.9.0  # IMPORTANT: CHANGE VERSION TO WHAT YOU WANT
-wget https://github.com/romkatv/powerlevel10k/archive/v"$powerlevel10k_version".tar.gz
-tar -xzf v"$powerlevel10k_version".tar.gz
-cd powerlevel10k-"$powerlevel10k_version"
-
-# Download libgit2 tarball and compile gitstatusd.
-./gitstatus/build -w
-
-# Post-process.
-rm ./gitstatus/deps/libgit2-*.tar.gz
-for file in *.zsh-theme internal/*.zsh gitstatus/*.zsh gitstatus/install; do
-  zsh -fc "emulate zsh -o no_aliases && zcompile -R -- $file.zwc $file"
-done
-```
-
-This needs binutils, cmake, gcc, g++, git, GNU make, wget, zsh and either shasum or sha256sum.
-
-Once build completes, *do not delete or move any files*. Package the whole directory as is. Don't
-add the directory or any of its subdirectories to `PATH`.
-
-You probably don't want to build in docker, so don't pass `-d` to `./gitstatus/build`.
-
-gitstatus depends on a [custom fork of libgit2](https://github.com/romkatv/libgit2/). When you run
-`./gitstatus/build -w`, it'll automatically download the appropriate libgit2 tarball and verify its
-sha256. If you want to separate the downloading of source tarballs from compilation, you can
-download the libgit2 tarball manually and invoke `./gitstatus/build` without `-w`.
-
-```zsh
-# Download and extract Powerlevel10k tarball.
-powerlevel10k_version=1.9.0  # IMPORTANT: CHANGE VERSION TO WHAT YOU WANT
-wget https://github.com/romkatv/powerlevel10k/archive/v"$powerlevel10k_version".tar.gz
-tar -xzf v"$powerlevel10k_version".tar.gz
-cd powerlevel10k-"$powerlevel10k_version"
-
-# Download libgit2 tarball and place it where ./gitstatus/build expects it.
-. ./gitstatus/build.info
-libgit2_path=./gitstatus/deps/libgit2-"$libgit2_version".tar.gz
-libgit2_url=https://github.com/romkatv/libgit2/archive/"$libgit2_version".tar.gz
-wget -O "$libgit2_path" "$libgit2_url"
-
-# Compile gitstatusd.
-./gitstatus/build
-
-# Post-process.
-rm ./gitstatus/deps/libgit2-*.tar.gz
-for file in *.zsh-theme internal/*.zsh gitstatus/*.zsh gitstatus/install; do
-  zsh -fc "emulate zsh -o no_aliases && zcompile -R -- $file.zwc $file"
-done
-```
-
-Note that the URL and the content of the libgit2 tarball are fully defined by the main Powerlevel10k
-tarball. Thus, you can set URLs and sha256 checksums of the two tarball in the same place (package
-definition) and update them at the same time when bumping package version. In other words, you don't
-have to extract `libgit2_version` programmatically. You can manually copy it from [build.info](
-  https://github.com/romkatv/powerlevel10k/blob/master/gitstatus/build.info) to your package
-definition, if you prefer.
-
-Powerlevel10k has an embedded version of [gitstatus](https://github.com/romkatv/gitstatus). It must
-stay that way. If you decide to package both of them, follow the respective instructions from each
-project. The embedded gitstatus in Powerlevel10k won't conflict with the standalone gitstatus. They
-can have different versions and can coexist within the same Zsh process. Do not attempt to
-surgically remove gitstatus from Powerlevel10k, package the result and then force Powerlevel10k to
-use a separately packaged gitstatus. Instead, treat Powerlevel10k and gitstatus as independent
-projects that don't depend on each other.
+It's currently neither easy nor recommended to package and distribute Powerlevel10k. There are no
+instructions you can follow that would allow you to easily update your package when new versions of
+Powerlevel10k are released. This may change in the future but not soon.
 
 ## Troubleshooting
 
@@ -1393,11 +1367,6 @@ capabilities of the terminal font. If your answers indicate that some glyphs don
 configuration wizard won't offer prompt styles that use them. *Fix*: Restart your terminal and
 install [the recommended font](#meslo-nerd-font-patched-for-powerlevel10k). Verify by running
 `p10k configure` and checking that all glyphs render correctly.
-
-The minimum screen size at which configuration wizard can function is 55 columns by 21 lines.
-However, not all prompt styles are offered at such small screen size as there is simply not enough
-space to present them. *Fix*: Resize your terminal to at least 84 columns by 25 lines prior to
-running `p10k configure`. Verify with `print ${COLUMNS}x${LINES}`.
 
 ### Cannot install the recommended font
 
@@ -1617,14 +1586,19 @@ upon terminal shrinking due to the command line wrapping around.
 
 #### Zsh patch
 
-The bug described above has been fixed in [this branch](
+The bug described above has been partially fixed (only for some terminals) in [this branch](
   https://github.com/romkatv/zsh/tree/fix-winchanged). The idea behind the fix is to use `sc` (save
 cursor) terminal capability before printing prompt and `rc` (restore cursor) to move cursor back
-to the same position when prompt needs to be refreshed.
+to the original position when prompt needs to be refreshed.
 
-*Note*: The patch doesn't work on Alacritty. On the plus side, it doesn't make things worse.
+The patch works only on terminals that reflow saved cursor position together with text when the
+terminal window is resized. The patch has no observable effect on terminals that don't reflow text
+on resize (both patched and unpatched Zsh behave correctly) and on terminals that reflow text but
+not saved cursor position (both patched and unpatched Zsh redraw prompt at the same incorrect
+position). In other words, the patch fixes the resizing issue on some terminals while keeping the
+behavior unchanged on others.
 
-There are two alternative approaches to fixing the bug that may seem to work at fight glance but in
+There are two alternative approaches to fixing the bug that may seem to work at first glance but in
 fact don't:
 
 - Instead of `sc`, use `u7` terminal capability to query the current cursor position and then `cup`
@@ -1644,19 +1618,21 @@ There is no ETA for the patch making its way into upstream Zsh. See [discussion]
 There are a few mitigation options for this issue.
 
 - Apply [the patch](#zsh-patch) and [rebuild Zsh from source](
-    https://github.com/zsh-users/zsh/blob/master/INSTALL). It won't help if you are using Alacritty.
+    https://github.com/zsh-users/zsh/blob/master/INSTALL). It won't help if you are using Alacritty,
+  Kitty or some other terminal that reflows text on resize but doesn't reflow saved cursor position.
+  On such terminals the patch will have no visible effect.
 - Disable text reflowing on window resize in terminal settings. If your terminal doesn't have this
   setting, try a different terminal.
 - Avoid long lines between the start of prompt and cursor.
   1. Disable ruler with `POWERLEVEL9K_SHOW_RULER=false`.
-  1. Disable prompt connection with `POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_CHAR=' '`.
-  1. Disable right frame with `POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX=` and
-     `POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_SUFFIX=` and
-     `POWERLEVEL9K_MULTILINE_LAST_PROMPT_SUFFIX=`.
-  1. Remove all elements from `POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS`. Right prompt on the last prompt
-     line will cause resizing issues only when the cursor is below it. This isn't very common, so
-     you might want to keep some elements in `POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS` provided that
-     none of them are succeeded by `newline`.
+  2. Disable prompt connection with `POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_CHAR=' '`.
+  3. Disable right frame with `POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX=''`,
+     `POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_SUFFIX=''` and
+     `POWERLEVEL9K_MULTILINE_LAST_PROMPT_SUFFIX=''`.
+  4. Set `POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()`. Right prompt on the last prompt line will cause
+     resizing issues only when the cursor is below it. This isn't very common, so you might want to
+     keep some elements in `POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS` provided that none of them are
+     succeeded by `newline`.
 
 ### Icons cut off in Konsole
 
@@ -1744,6 +1720,7 @@ typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='${P9K_CONTENT}'  # not bold
 - [License](#license)
 - [FAQ](#faq)
   - [How do I update Powerlevel10k?](#how-do-i-update-powerlevel10k)
+  - [How do I uninstall Powerlevel10k?](#how-do-i-uninstall-powerlevel10k)
   - [Where can I ask for help and report bugs?](#where-can-i-ask-for-help-and-report-bugs)
   - [Which aspects of shell and terminal does Powerlevel10k affect?](#which-aspects-of-shell-and-terminal-does-powerlevel10k-affect)
   - [I'm using Powerlevel9k with Oh My Zsh. How do I migrate?](#im-using-powerlevel9k-with-oh-my-zsh-how-do-i-migrate)
@@ -1764,7 +1741,6 @@ typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='${P9K_CONTENT}'  # not bold
   - [What is the best prompt style in the configuration wizard?](#what-is-the-best-prompt-style-in-the-configuration-wizard)
   - [How to make Powerlevel10k look like robbyrussell Oh My Zsh theme?](#how-to-make-powerlevel10k-look-like-robbyrussell-oh-my-zsh-theme)
   - [Can prompts for completed commands display error status for *those* commands instead of the commands preceding them?](#can-prompts-for-completed-commands-display-error-status-for-those-commands-instead-of-the-commands-preceding-them)
-  - [Is there an AUR package for Powerlevel10k?](#is-there-an-aur-package-for-powerlevel10k)
   - [What is the minimum supported Zsh version?](#what-is-the-minimum-supported-zsh-version)
   - [How were these screenshots and animated gifs created?](#how-were-these-screenshots-and-animated-gifs-created)
   - [How was the recommended font created?](#how-was-the-recommended-font-created)

@@ -9,6 +9,8 @@ if [ -n "${ZSH_VERSION:-}" ]; then
   emulate sh -o err_exit -o no_unset
 fi
 
+export LC_ALL=C
+
 usage="$(command cat <<\END
 Usage: build [-m ARCH] [-c CPU] [-d CMD] [-i IMAGE] [-s] [-w]
 
@@ -52,21 +54,32 @@ if [ "$(narg $workdir)" != 1 -o -z "${workdir##*:*}" ]; then
   exit 1
 fi
 
-appname=gitstatusd-"$gitstatus_kernel"-"$gitstatus_arch"
+appname=gitstatusd
 libgit2_tmp="$outdir"/deps/"$appname".libgit2.tmp
 
 cleanup() {
-  cd /
-  command rm -rf -- "$workdir" "$outdir"/usrbin/"$appname".tmp "$libgit2_tmp"
   trap - INT QUIT TERM ILL PIPE
+  cd /
+  if ! command rm -rf -- "$workdir" "$outdir"/usrbin/"$appname".tmp "$libgit2_tmp"; then
+    command sleep 5
+    command rm -rf -- "$workdir" "$outdir"/usrbin/"$appname".tmp "$libgit2_tmp"
+  fi
 }
 trap cleanup INT QUIT TERM ILL PIPE
 
 if [ -n "$gitstatus_install_tools" ]; then
   case "$gitstatus_kernel" in
     linux)
-      command apk update
-      command apk add binutils cmake gcc g++ git make musl-dev perl-utils
+      if command -v apk >/dev/null 2>&1; then
+        command apk update
+        command apk add binutils cmake gcc g++ git make musl-dev perl-utils
+      elif command -v apt-get >/dev/null 2>&1; then
+        apt-get update
+        apt-get install -y binutils cmake gcc g++ make wget
+      else
+        >&2 echo "[error] -s is not supported on this system"
+        exit 1
+      fi
     ;;
     freebsd)
       command pkg install -y cmake gmake binutils gcc git perl5
@@ -107,19 +120,21 @@ cpus="$(command getconf _NPROCESSORS_ONLN 2>/dev/null)" ||
   cpus=8
 
 case "$gitstatus_cpu" in
-  ppc64le)
-    archflag="-mcpu"
-  ;;
-  *)
-    archflag="-march"
-  ;;
+  powerpc64le) archflag="-mcpu";;
+  *)           archflag="-march";;
 esac
 
+cflags="$archflag=$gitstatus_cpu -fno-plt"
+
+if [ "$gitstatus_cpu" = x86-64 ]; then
+  cflags="$cflags -mtune=generic"
+fi
+
 libgit2_cmake_flags=
-libgit2_cflags="$archflag=$gitstatus_cpu"
+libgit2_cflags="$cflags"
 
 gitstatus_cxx=g++
-gitstatus_cxxflags="-I${workdir}/libgit2/include -DGITSTATUS_ZERO_NSEC -D_GNU_SOURCE $archflag=$gitstatus_cpu"
+gitstatus_cxxflags="$cflags -I${workdir}/libgit2/include -DGITSTATUS_ZERO_NSEC -D_GNU_SOURCE"
 gitstatus_ldflags="-L${workdir}/libgit2/build"
 gitstatus_ldlibs=
 gitstatus_make=make
@@ -127,14 +142,20 @@ gitstatus_make=make
 case "$gitstatus_kernel" in
   linux)
     gitstatus_ldflags="$gitstatus_ldflags -static"
+    gitstatus_ldflags="$gitstatus_ldflags -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now"
+    libgit2_cmake_flags="$libgit2_cmake_flags -DENABLE_REPRODUCIBLE_BUILDS=ON"
   ;;
   freebsd)
     gitstatus_make=gmake
     gitstatus_ldflags="$gitstatus_ldflags -static"
+    gitstatus_ldflags="$gitstatus_ldflags -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now"
+    libgit2_cmake_flags="$libgit2_cmake_flags -DENABLE_REPRODUCIBLE_BUILDS=ON"
   ;;
   netbsd)
     gitstatus_make=gmake
     gitstatus_ldflags="$gitstatus_ldflags -static"
+    gitstatus_ldflags="$gitstatus_ldflags -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now"
+    libgit2_cmake_flags="$libgit2_cmake_flags -DENABLE_REPRODUCIBLE_BUILDS=ON"
   ;;
   darwin)
     command mkdir -- "$workdir"/lib
@@ -144,12 +165,15 @@ case "$gitstatus_kernel" in
     gitstatus_cxxflags="$gitstatus_cxxflags -I/usr/local/opt/libiconv/include"
     gitstatus_ldlibs="$gitstatus_ldlibs -liconv"
     gitstatus_ldflags="$gitstatus_ldflags -L${workdir}/lib"
+    libgit2_cmake_flags="$libgit2_cmake_flags -DENABLE_REPRODUCIBLE_BUILDS=OFF"
   ;;
   msys*|mingw*)
     gitstatus_ldflags="$gitstatus_ldflags -static"
+    libgit2_cmake_flags="$libgit2_cmake_flags -DENABLE_REPRODUCIBLE_BUILDS=ON"
   ;;
   cygwin*)
     gitstatus_ldflags="$gitstatus_ldflags -static"
+    libgit2_cmake_flags="$libgit2_cmake_flags -DENABLE_REPRODUCIBLE_BUILDS=ON"
   ;;
   *)
     >&2 echo "[internal error] unhandled kernel: $gitstatus_kernel"
@@ -249,7 +273,6 @@ CFLAGS="$libgit2_cflags" command cmake \
   -DUSE_GSSAPI=OFF                     \
   -DUSE_NTLMCLIENT=OFF                 \
   -DBUILD_SHARED_LIBS=OFF              \
-  -DENABLE_REPRODUCIBLE_BUILDS=OFF     \
   $libgit2_cmake_flags                 \
   ..
 command make -j "$cpus" VERBOSE=1
@@ -267,9 +290,10 @@ app="$outdir"/usrbin/"$appname"
 command strip "$app".tmp
 
 command mkdir -- "$workdir"/repo
-command git -C "$workdir"/repo init --
+command git -C "$workdir"/repo init
+command git -C "$workdir"/repo config user.name "Your Name"
 command git -C "$workdir"/repo config user.email "you@example.com"
-command git -C "$workdir"/repo commit --allow-empty --allow-empty-message -m ''
+command git -C "$workdir"/repo commit --allow-empty --allow-empty-message --no-gpg-sign -m ''
 
 resp="$(printf "hello\037$workdir/repo\036" | "$app".tmp)"
 [ -n "$resp" -a -z "${resp##hello*1*$workdir/repo*master*}" ]
@@ -385,6 +409,7 @@ if [ -z "$gitstatus_cpu" ]; then
   case "$gitstatus_arch" in
     armv6l)         gitstatus_cpu=armv6;;
     armv7l)         gitstatus_cpu=armv7;;
+    arm64)          gitstatus_cpu=armv8;;
     aarch64)        gitstatus_cpu=armv8-a;;
     ppc64le)        gitstatus_cpu=powerpc64le;;
     riscv64)        gitstatus_cpu=rv64imafdc;;
@@ -430,9 +455,6 @@ case "$gitstatus_kernel" in
           ;;
         esac
       fi
-    elif [ -n "$gitstatus_install_tools" ]; then
-      >&2 echo '[error] -s without -d is not supported on linux'
-      exit 1
     fi
   ;;
   freebsd|netbsd|darwin)
@@ -486,6 +508,8 @@ fi
 
 if [ -n "$docker_cmd" ]; then
   "$docker_cmd" run                                       \
+    -e docker_cmd="$docker_cmd"                           \
+    -e docker_image="$docker_image"                       \
     -e gitstatus_kernel="$gitstatus_kernel"               \
     -e gitstatus_arch="$gitstatus_arch"                   \
     -e gitstatus_cpu="$gitstatus_cpu"                     \
