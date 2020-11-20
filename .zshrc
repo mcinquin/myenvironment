@@ -72,7 +72,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(zsh-256color git git-remote-branch git-auto-fetch svn vagrant docker docker-compose systemd apt vault kubectl zsh-completions)
+plugins=(zsh-256color zsh-z git git-remote-branch git-auto-fetch svn vagrant docker docker-compose systemd apt vault kubectl zsh-completions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -81,9 +81,6 @@ zstyle ':completion:*' rehash true
 
 # User configuration
 eval $(dircolors)
-
-# include Z, yo
-source ~/z.sh
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
