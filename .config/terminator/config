@@ -1,13 +1,23 @@
 [global_config]
-  always_split_with_profile = True
+  window_state = maximise
   enabled_plugins = CustomCommandsMenu, TerminalShot, APTURLHandler
   suppress_multiple_term_dialog = True
-  window_state = maximise
+  always_split_with_profile = True
 [keybindings]
-  copy = <Control><Shift>c
-  paste = <Control><Shift>v
   split_horiz = <Control><Alt>h
   split_vert = <Control><Alt>v
+  copy = <Control><Shift>c
+  paste = <Control><Shift>v
+[profiles]
+  [[default]]
+    background_color = "#222222"
+    background_darkness = 0.95
+    cursor_color = "#cecece"
+    font = Borg Sans Mono 11
+    foreground_color = "#bdbaae"
+    scrollback_infinite = True
+    palette = "#15171c:#ec5f67:#81a764:#fec254:#5486c0:#bf83c1:#57c2c1:#efece7:#555555:#ff6973:#93d493:#ffd256:#4d84d1:#ff55ff:#57c2c1:#ffffff"
+    use_system_font = False
 [layouts]
   [[default]]
     [[[child1]]]
@@ -18,12 +28,3 @@
       parent = ""
       type = Window
 [plugins]
-[profiles]
-  [[default]]
-    background_color = "#222222"
-    background_image = None
-    cursor_color = "#cecece"
-    font = Monospace 10
-    foreground_color = "#bdbaae"
-    palette = "#15171c:#ec5f67:#81a764:#fec254:#5486c0:#bf83c1:#57c2c1:#efece7:#555555:#ff6973:#93d493:#ffd256:#4d84d1:#ff55ff:#57c2c1:#ffffff"
-    scrollback_infinite = True
