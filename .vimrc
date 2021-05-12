@@ -105,7 +105,8 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-call plug#begin('~/.vim/plugged')
+"call plug#begin('~/.vim/plugged')
+call plug#begin(stdpath('data') . '/plugged')
 " General
   Plug 'scrooloose/nerdtree'
   Plug 'Raimondi/delimitMate'
@@ -124,6 +125,10 @@ call plug#begin('~/.vim/plugged')
 " Colorschemes
   Plug 'altercation/vim-colors-solarized'
   Plug 'rakr/vim-one'
+
+" Git
+  Plug 'airblade/vim-gitgutter'
+  Plug 'tpope/vim-fugitive'
 
 " Language support
   Plug 'plasticboy/vim-markdown'
