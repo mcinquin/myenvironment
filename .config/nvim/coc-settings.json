@@ -1,0 +1,27 @@
+{
+	"languageserver": {
+		"terraform": {
+			"command": "/usr/local/bin/terraform-lsp",
+			"filetypes": [
+				"terraform",
+				"tf"
+			],
+			"initializationOptions": {},
+			"settings": {}
+		},
+    "kubernetes": {
+      "command": "/usr/local/bin/languageserver-0.1.27-linux",
+      "args": [
+        "--stdio"
+      ],
+      "filetypes": ["yaml.kubernetes"],
+      "initializationOptions": {},
+      "settings": {}
+    }
+	},
+  "yaml.schemas": {
+    "http://json.schemastore.org/ansible-stable-2.9": "*/*.yml",
+    "kubernetes": "/*.yaml"
+  },
+  "diagnostic.displayByAle": true
+}
