@@ -46,28 +46,23 @@ set titleold=                   " Don't set the title to 'Thanks for flying Vim'
 set showmode                    " Display the current mode
 set laststatus=2
 "set colorcolumn=80
-set noswapfile                    " disable swapfile usage
-set noerrorbells                  " No bells!
-set novisualbell                  " I said, no bells!
+set noswapfile                  " disable swapfile usage
+set noerrorbells                " No bells!
+set novisualbell                " I said, no bells!
+set signcolumn=auto             " Protect copy
 
 "----------------------------------------------
 " Functions
 "----------------------------------------------
 "-Add changelog in spec file-
-"autocmd BufRead *.spec noremap <F7> /%changelog<cr>:r!LC_ALL=C date +"\%a \%b \%d \%Y"<CR>I* <esc>A Shini31 <github@capitoul.net><CR>Release <esc>/Version:<cr>$T v$hy/Release <cr>$pa-<esc>/Release:<cr>$T v$hy/Release <cr>$po-<cr>
+autocmd BufRead *.spec noremap <F7> /%changelog<cr>:r!LC_ALL=C date +"\%a \%b \%d \%Y"<CR>I* <esc>A Mathieu Cinquin <mcinquin@merethis.net><CR>Release <esc>/Version:<cr>$T v$hy/Release <cr>$pa-<esc>/Release:<cr>$T v$hy/Release <cr>$po-<cr>
 
 "make vim save and load the folding of the document each time it loads"
 "also places the cursor in the last place that it was left."
-au BufWinLeave * mkview
-au BufWinEnter * silent loadview
+au BufWrite * mkview
+au BufRead * silent! loadview
 
 "-Trailing Whitespaces-
-"highlight ExtraWhitespace ctermbg=red guibg=red
-"match ExtraWhitespace /\s\+$/
-"autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-"autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-"autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-"autocmd BufWinLeave * call clearmatches()
 function! StripTrailingWhiteSpaces()
   "Store the current position
   let _s=@/
@@ -85,16 +80,17 @@ map <F2> :call StripTrailingWhiteSpaces()<CR>
 augroup kubernetes
   au!
   au BufRead,BufNewFile */.kube/config set filetype=yaml
+  au BufRead,BufNewFile *.yaml
+    \  if getline(1) =~? '^\(kind\|apiVersion\): ' || getline(2) =~? '^\(kind\|apiVersion\): ' || getline(3) =~? '^\(kind\|apiVersion\): ' || getline(4) =~? '^\(kind\|apiVersion\): ' || getline(5) =~? '^\(kind\|apiVersion\): '
+    \|   set filetype=yaml.kubernetes syntax=yaml
+    \| else
+    \|   set filetype=yaml
+    \| endif
   au BufRead,BufNewFile */templates/*.yaml,*/deployment/*.yaml,*/templates/*.tpl,*/deployment/*.tpl set filetype=yaml.gotexttmpl
-  au FileType yaml setlocal ts=2 sts=2 sw=2 expandtab indentkeys-=0# indentkeys-=<:>
-  au FileType yaml nmap <F5> :AsyncRun! kubeval '%:p'<CR>
-  au FileType yaml nmap <F6> :cclose <CR>
+  au FileType yaml,kubernetes setlocal ts=2 sts=2 sw=2 expandtab indentkeys-=0# indentkeys-=<:>
+  au FileType yaml,kubernetes nmap <F5> :AsyncRun! kubeval '%:p'<CR>
+  au FileType yaml,kubernetes nmap <F6> :cclose <CR>
 augroup END
-
-"if executable('terraform-ls')
-"  au User lsp_setup call lsp#register_server({'name': 'terraform-ls', 'cmd': {server_info->['terraform-ls', 'serve']}, 'whitelist': ['terraform']})
-"endif
-
 
 "----------------------------------------------
 " Plugin management
@@ -113,6 +109,7 @@ call plug#begin(stdpath('data') . '/plugged')
   Plug 'andymass/vim-matchup'
   Plug 'qwertologe/nextval.vim'
   Plug 'skywind3000/asyncrun.vim'
+  Plug 'SirVer/ultisnips'
 
 " Status bar
   Plug 'vim-airline/vim-airline'
@@ -124,7 +121,7 @@ call plug#begin(stdpath('data') . '/plugged')
 
 " Colorschemes
   Plug 'altercation/vim-colors-solarized'
-  Plug 'rakr/vim-one'
+  "Plug 'rakr/vim-one'
 
 " Git
   Plug 'airblade/vim-gitgutter'
@@ -132,28 +129,15 @@ call plug#begin(stdpath('data') . '/plugged')
 
 " Language support
   Plug 'plasticboy/vim-markdown'
+  Plug 'hashivim/vim-terraform'
   Plug 'jvirtanen/vim-hcl'
   Plug 'ekalinin/dockerfile.vim'
   Plug 'pearofducks/ansible-vim', { 'do': 'cd ./UltiSnips; ./generate.py' }
-  Plug 'hashivim/vim-terraform'
+  Plug 'stephpy/vim-yaml'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 call plug#end()
 
-"----------------------------------------------
-" Plugin: altercation/vim-colors-solarized
-"----------------------------------------------
-"set t_Co=256
-"set background=dark
-"if filereadable(expand("~/.vim/plugged/vim-colors-solarized/colors/solarized.vim"))
-"  let g:solarized_termcolors=256
-"  let g:solarized_termtrans=0
-"  let g:solarized_contrast="normal"
-"  let g:solarized_visibility="normal"
-"  color solarized
-"endif
-"
-"hi Normal term=bold cterm=NONE ctermfg=245 ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
-"hi Comment term=bold cterm=NONE ctermfg=242 ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
 
 "----------------------------------------------
 " Plugin: rakr/vim-one
@@ -162,23 +146,38 @@ call plug#end()
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
 "(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
-if (empty($TMUX))
-  if (has("nvim"))
-  "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
-  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-  endif
-  "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
-  "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
-  " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
-  if (has("termguicolors"))
-    set termguicolors
-  endif
-endif
+"if (empty($TMUX))
+"  if (has("nvim"))
+"    "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+"    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+"  endif
+"  "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+"  "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+"  " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+"  if (has("termguicolors"))
+"    set termguicolors
+"  endif
+"endif
+"colorscheme one
+"set background=dark
+"let g:one_allow_italics = 1
+"call one#highlight('vimLineComment', '8C8A8A', '', 'italic')
 
-set background=dark
-let g:one_allow_italics = 1
-colorscheme one
-call one#highlight('vimLineComment', '777777', '', 'italic')
+"----------------------------------------------
+" Plugin: altercation/vim-colors-solarized
+"----------------------------------------------
+let autoload_plug_path = stdpath('data') . '/plugged/vim-colors-solarized/colors/solarized.vim'
+if filereadable(autoload_plug_path)
+  set t_Co=256
+  set background=dark
+  let g:solarized_termcolors=256
+  let g:solarized_termtrans=0
+  let g:solarized_contrast="normal"
+  let g:solarized_visibility="normal"
+  colorscheme solarized
+  hi Comment term=bold cterm=NONE ctermfg=244 ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
+  hi Normal term=bold cterm=NONE ctermfg=248 ctermbg=NONE gui=NONE guifg=#80a0ff guibg=NONE
+endif
 
 "----------------------------------------------
 " Plugin: vim-airline/vim-airline
@@ -188,13 +187,14 @@ if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
 
-"let g:airline_theme = 'solarized'
-let g:airline_theme='one'
+let g:airline_theme = 'solarized'
 if !exists('g:airline_powerline_fonts')
   " Use the default set of separators with a few customizations
   let g:airline_left_sep='›'  " Slightly fancier than '>'
   let g:airline_right_sep='‹' " Slightly fancier than '<'
 endif
+let g:airline_section_b = '%{getcwd()}' " in section B of the status line display the CWD
+let g:airline#extensions#tabline#enabled = 1
 
 "----------------------------------------------
 " Plugin: dense-analysis/ale
@@ -202,12 +202,12 @@ endif
 let g:airline#extensions#ale#enabled = 0
 let g:ale_linters_explicit = 1
 let g:ale_fixers = {'python': ['black', 'isort']}
-let g:ale_linters = {'python': ['flake8'], 'ansible': ['ansible-lint'], 'dockerfile': ['hadolint'], 'terraform': ['terraform'], 'json': ['jsonlint']}
+let g:ale_linters = {'python': ['flake8'], 'ansible': ['ansible-lint'], 'dockerfile': ['hadolint'], 'terraform': ['terraform', "terraform-lsp"], 'json': ['jsonlint']}
 let g:ale_sign_error = '⚠'
 let g:ale_sign_warning = '✘'
 let g:ale_lint_on_enter = 1
+let g:ale_sign_priority = 30
 let g:ale_disable_lsp = 1
-"let g:ale_completion_enabled = 1
 "let g:ale_echo_msg_error_str = 'E'
 "let g:ale_echo_msg_warning_str = 'W'
 "let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
@@ -272,8 +272,35 @@ let g:vim_markdown_new_list_item_indent = 2
 let g:vim_markdown_no_extensions_in_markdown = 1
 
 "----------------------------------------------
+" Plugin: airblade/vim-gitgutter
+"----------------------------------------------
+set updatetime=100
+let g:gitgutter_sign_priority=9
+highlight clear SignColumn
+"call gitgutter#highlight#define_highlights()
+
+"----------------------------------------------
+" Plugin: stephpy/vim-yaml
+"----------------------------------------------
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+autocmd FileType yaml setl indentkeys-=<:>
+
+"----------------------------------------------
+" Plugin: hashivim/vim-terraform
+"----------------------------------------------
+autocmd BufNewFile,BufRead *.tf     set filetype=terraform
+autocmd BufNewFile,BufRead *.tfvars set filetype=terraform
+autocmd BufNewFile,BufRead *.tfstate set filetype=json
+let g:terraform_align=1
+let g:terraform_fmt_on_save=1
+
+"----------------------------------------------
 " Plugin: neoclide/coc.nvim
 "----------------------------------------------
+" Set internal encoding of vim, not needed on neovim, since coc.nvim using some
+" unicode characters in the file autoload/float.vim
+set encoding=utf-8
+
 " TextEdit might fail if hidden is not set.
 set hidden
 
@@ -293,7 +320,7 @@ set shortmess+=c
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
-if has("patch-8.1.1564")
+if has("nvim-0.5.0") || has("patch-8.1.1564")
   " Recently vim can merge signcolumn and number column into one
   set signcolumn=number
 else
@@ -390,11 +417,14 @@ xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
-" Note coc#float#scroll works on neovim >= 0.4.3 or vim >= 8.2.0750
-nnoremap <nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-nnoremap <nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-inoremap <nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-inoremap <nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
 
 " Use CTRL-S for selections ranges.
 " Requires 'textDocument/selectionRange' support of language server.
