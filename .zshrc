@@ -90,7 +90,10 @@ eval $(dircolors)
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias svi="sudo vi"
+alias svi="sudo nvim"
+alias vi="nvim"
+alias vim="nvim"
+alias vimdiff="nvim -d"
 alias service="sudo service"
 alias ipa="ip --brief --color a"
 alias ssa="ss -plantue"
